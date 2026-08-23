@@ -1,0 +1,2046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Neuron Quiz Pro — Master India & Beyond</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0B0F19;
+  --bg2: #10162A;
+  --card: #141b30;
+  --violet: #7C5CFC;
+  --cyan: #4CE0D2;
+  --amber: #FFB84D;
+  --danger: #FF5C7A;
+  --success: #00c9a7;
+  --text: #EDEAF6;
+  --muted: #838BAE;
+  --pink: #FF5C7A;
+  --blue: #4A9EFF;
+  --green: #00c9a7;
+  --orange: #FFB84D;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  background: radial-gradient(ellipse at top, var(--bg2), var(--bg) 60%);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-x: hidden;
+  position: relative;
+}
+canvas#net { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; }
+canvas#confetti { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 100; pointer-events: none; }
+.wrap { position: relative; z-index: 1; width: 100%; max-width: 540px; padding: 16px; }
+.card {
+  background: rgba(20, 27, 48, 0.82);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(124, 92, 252, 0.28);
+  border-radius: 24px;
+  padding: 26px 22px;
+  box-shadow: 0 24px 70px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.05);
+  max-height: 92vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--violet) transparent;
+}
+.card::-webkit-scrollbar { width: 5px; }
+.card::-webkit-scrollbar-thumb { background: var(--violet); border-radius: 10px; }
+h1 {
+  font-family: 'Sora', sans-serif;
+  font-weight: 800;
+  font-size: 1.55rem;
+  text-align: center;
+  letter-spacing: -0.03em;
+  background: linear-gradient(90deg, var(--cyan), var(--violet));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.sub { text-align: center; color: var(--muted); font-size: 0.84rem; margin-top: 5px; margin-bottom: 18px; }
+.backbtn {
+  display: inline-flex; align-items: center; gap: 6px; color: var(--muted);
+  font-size: 0.8rem; background: none; border: none; margin-bottom: 12px; cursor: pointer;
+}
+.backbtn:hover { color: var(--cyan); }
+
+/* Profile form */
+.field { margin-bottom: 13px; }
+.field label { display: block; font-size: 0.72rem; color: var(--muted); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.07em; }
+.field input, .field select {
+  width: 100%; padding: 12px 14px; border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04); color: var(--text);
+  font-family: 'Inter', sans-serif; font-size: 0.92rem;
+}
+.field select { appearance: none; -webkit-appearance: none; }
+.field input:focus, .field select:focus { outline: none; border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(76,224,210,0.15); }
+
+/* Circular Profile Badge */
+.profile-badge {
+  display: flex; align-items: center; gap: 12px;
+  background: rgba(124,92,252,0.09); border: 1px solid rgba(124,92,252,0.28);
+  border-radius: 50px; padding: 9px 14px 9px 9px; margin-bottom: 14px; font-size: 0.8rem;
+}
+.profile-avatar {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--cyan), var(--violet));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1.15rem; color: #0B0F19;
+  flex-shrink: 0; box-shadow: 0 0 18px rgba(124,92,252,0.45);
+  position: relative;
+}
+.profile-avatar .level-dot {
+  position: absolute; bottom: -2px; right: -2px;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--amber); color: #0B0F19;
+  font-size: 0.55rem; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid var(--card);
+}
+.profile-badge .who { font-family: 'Sora', sans-serif; font-weight: 700; }
+.profile-badge .meta { color: var(--muted); font-size: 0.7rem; margin-top: 2px; }
+.profile-badge .editlink { color: var(--cyan); font-size: 0.7rem; cursor: pointer; background: none; border: none; margin-left: auto; }
+
+/* XP Bar */
+.xp-bar-wrap { margin-bottom: 14px; }
+.xp-bar-label { display: flex; justify-content: space-between; font-size: 0.68rem; color: var(--muted); margin-bottom: 4px; }
+.xp-bar { height: 8px; background: rgba(255,255,255,0.08); border-radius: 100px; overflow: hidden; }
+.xp-bar-fill { height: 100%; background: linear-gradient(90deg, var(--amber), var(--violet)); border-radius: 100px; transition: width 0.6s ease; }
+
+/* Scoreboard */
+.scoreboard {
+  background: rgba(76,224,210,0.06); border: 1px solid rgba(76,224,210,0.25);
+  border-radius: 16px; padding: 13px 15px; margin-bottom: 14px;
+}
+.scoreboard .sb-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 9px; }
+.scoreboard .sb-title { font-family: 'Sora', sans-serif; font-weight: 700; font-size: 0.84rem; }
+.scoreboard .sb-tag { color: var(--muted); font-size: 0.68rem; }
+.scoreboard .sb-row { display: flex; gap: 16px; flex-wrap: wrap; }
+.scoreboard .sb-row div .n { font-family: 'Sora', sans-serif; font-weight: 700; font-size: 1.02rem; }
+.scoreboard .sb-row div .l { font-size: 0.6rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* Timer */
+.timerbar { height: 6px; width: 100%; background: rgba(255,255,255,0.08); border-radius: 100px; overflow: hidden; margin-bottom: 9px; }
+.timerbar-fill { height: 100%; width: 100%; background: linear-gradient(90deg, var(--cyan), var(--amber)); border-radius: 100px; }
+.timerbar-fill.urgent { background: linear-gradient(90deg, var(--danger), var(--amber)); }
+
+/* Lifeline */
+.lifeline-row { display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
+.lifeline-btn {
+  font-family: 'Sora', sans-serif; font-size: 0.7rem; font-weight: 600; color: var(--amber);
+  background: rgba(255,184,77,0.1); border: 1px solid rgba(255,184,77,0.3);
+  border-radius: 100px; padding: 6px 11px; cursor: pointer;
+}
+.lifeline-btn:disabled { opacity: 0.3; pointer-events: none; }
+.opt.masked { opacity: 0.22; filter: blur(1.8px); pointer-events: none; }
+
+/* Mode cards */
+.modegrid { display: flex; flex-direction: column; gap: 10px; }
+.modecard {
+  display: flex; align-items: center; gap: 13px; text-align: left;
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px; padding: 14px; cursor: pointer; transition: all .15s ease; width: 100%;
+}
+.modecard:active { transform: scale(0.97); }
+.modecard .icon { font-size: 1.55rem; }
+.modecard .ttl { font-family: 'Sora', sans-serif; font-weight: 700; font-size: 0.96rem; }
+.modecard .dsc { color: var(--muted); font-size: 0.75rem; margin-top: 2px; }
+.modecard.mode-a { border-color: rgba(76,224,210,0.32); }
+.modecard.mode-b { border-color: rgba(255,184,77,0.32); }
+.modecard.mode-c { border-color: rgba(124,92,252,0.32); }
+.modecard.mode-d { border-color: rgba(255,92,122,0.32); }
+.modecard.mode-e { border-color: rgba(74,158,255,0.32); }
+
+/* Choice grids */
+.choicegrid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-bottom: 6px; max-height: 52vh; overflow-y: auto; padding-right: 3px; }
+.choice {
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+  color: var(--text); font-family: 'Sora', sans-serif; font-weight: 600; font-size: 0.8rem;
+  padding: 12px 8px; border-radius: 13px; cursor: pointer; transition: all .15s ease;
+  word-break: break-word; line-height: 1.3;
+}
+.choice:active { transform: scale(0.96); }
+.choice:hover { border-color: var(--cyan); }
+
+/* Quiz HUD */
+.hud { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; font-family: 'Sora', sans-serif; }
+.hud .stat { text-align: center; }
+.hud .stat .num { font-size: 1.08rem; font-weight: 700; }
+.hud .stat .lbl { font-size: 0.58rem; color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase; }
+.progressbar { height: 6px; width: 100%; background: rgba(255,255,255,0.08); border-radius: 100px; overflow: hidden; margin-bottom: 18px; }
+.progressbar-fill { height: 100%; background: linear-gradient(90deg, var(--cyan), var(--violet)); border-radius: 100px; transition: width .3s ease; }
+
+.question-box { text-align: center; margin-bottom: 20px; min-height: 60px; display: flex; align-items: center; justify-content: center; }
+.question-box .qtag { font-size: 0.66rem; color: var(--amber); display: block; margin-bottom: 7px; text-transform: uppercase; letter-spacing: 0.08em; }
+.question-box .q { font-family: 'Inter', sans-serif; font-weight: 600; font-size: 1.08rem; line-height: 1.5; }
+
+.options { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+.opt {
+  border: 2px solid transparent; color: #fff;
+  font-size: 0.9rem; font-weight: 600; padding: 13px 8px; border-radius: 13px; transition: all .15s ease;
+  cursor: pointer; font-family: 'Inter', sans-serif; text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+.opt:active { transform: scale(0.96); }
+.opt.color-0 { background: linear-gradient(135deg, #00c9a7, #00e0c0); box-shadow: 0 4px 14px rgba(0,201,167,0.35); }
+.opt.color-1 { background: linear-gradient(135deg, #7C5CFC, #9b7bff); box-shadow: 0 4px 14px rgba(124,92,252,0.4); }
+.opt.color-2 { background: linear-gradient(135deg, #FFB84D, #ffcc70); box-shadow: 0 4px 14px rgba(255,184,77,0.4); }
+.opt.color-3 { background: linear-gradient(135deg, #FF5C7A, #ff8a9e); box-shadow: 0 4px 14px rgba(255,92,122,0.4); }
+.opt.correct { background: linear-gradient(135deg, #00c9a7, #00e0c0) !important; border-color: #fff; box-shadow: 0 0 24px rgba(76,224,210,0.6) !important; transform: scale(1.03); }
+.opt.wrong { background: linear-gradient(135deg, #FF5C7A, #ff8a9e) !important; border-color: #fff; box-shadow: 0 0 18px rgba(255,92,122,0.5) !important; opacity: 0.85; }
+.opt:disabled { pointer-events: none; }
+
+/* Buttons */
+.btn-primary {
+  font-family: 'Sora', sans-serif; cursor: pointer; border: none; outline: none;
+  width: 100%; padding: 13px; border-radius: 13px; font-size: 0.98rem; font-weight: 700;
+  color: #0B0F19; background: linear-gradient(90deg, var(--cyan), var(--violet));
+  box-shadow: 0 8px 22px rgba(124,92,252,0.35); margin-top: 8px;
+}
+.btn-primary:active { transform: scale(0.97); }
+.btn-secondary {
+  font-family: 'Sora', sans-serif; cursor: pointer; border: 1px solid rgba(255,255,255,0.15); outline: none;
+  width: 100%; padding: 11px; border-radius: 13px; font-size: 0.88rem; font-weight: 600;
+  color: var(--text); background: transparent; margin-top: 9px;
+}
+.btn-secondary:hover { border-color: var(--cyan); color: var(--cyan); }
+
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* Search */
+.search-box {
+  width: 100%; padding: 11px 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04); color: var(--text); font-size: 0.9rem; margin-bottom: 12px;
+}
+.search-box:focus { outline: none; border-color: var(--cyan); }
+
+/* Achievements */
+.ach-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.ach-card {
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px; padding: 12px; text-align: center;
+}
+.ach-card.locked { opacity: 0.4; filter: grayscale(0.7); }
+.ach-card .ach-icon { font-size: 1.6rem; margin-bottom: 4px; }
+.ach-card .ach-name { font-family: 'Sora', sans-serif; font-weight: 700; font-size: 0.78rem; }
+.ach-card .ach-desc { color: var(--muted); font-size: 0.65rem; margin-top: 2px; }
+
+/* Settings */
+.setting-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.setting-row:last-child { border-bottom: none; }
+.setting-label { font-size: 0.9rem; font-weight: 500; }
+.setting-desc { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
+.toggle {
+  width: 46px; height: 26px; background: rgba(255,255,255,0.12); border-radius: 100px;
+  position: relative; cursor: pointer; transition: background 0.2s;
+}
+.toggle.on { background: var(--cyan); }
+.toggle::after {
+  content: ''; position: absolute; width: 20px; height: 20px; background: #fff;
+  border-radius: 50%; top: 3px; left: 3px; transition: transform 0.2s;
+}
+.toggle.on::after { transform: translateX(20px); }
+
+/* Results */
+.result-hero { text-align: center; margin-bottom: 18px; }
+.result-score { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 2.4rem; background: linear-gradient(90deg, var(--cyan), var(--violet)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.result-msg { font-size: 1rem; margin-top: 4px; }
+.result-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.result-stat {
+  background: rgba(255,255,255,0.04); border-radius: 12px; padding: 10px; text-align: center;
+}
+.result-stat .rs-num { font-family: 'Sora', sans-serif; font-weight: 700; font-size: 1.1rem; }
+.result-stat .rs-lbl { font-size: 0.62rem; color: var(--muted); text-transform: uppercase; }
+
+.review-list { max-height: 28vh; overflow-y: auto; margin-bottom: 12px; }
+.review-item {
+  background: rgba(255,255,255,0.03); border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; font-size: 0.82rem;
+}
+.review-item.correct { border-left: 3px solid var(--success); }
+.review-item.wrong { border-left: 3px solid var(--danger); }
+
+/* Leaderboard */
+.lb-row {
+  display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+  background: rgba(255,255,255,0.03); border-radius: 12px; margin-bottom: 8px;
+}
+.lb-rank { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1rem; width: 28px; text-align: center; }
+.lb-rank.gold { color: #FFD700; }
+.lb-rank.silver { color: #C0C0C0; }
+.lb-rank.bronze { color: #CD7F32; }
+.lb-name { flex: 1; font-weight: 600; }
+.lb-score { font-family: 'Sora', sans-serif; font-weight: 700; color: var(--cyan); }
+
+/* Daily Challenge Banner */
+.daily-banner {
+  background: linear-gradient(135deg, rgba(124,92,252,0.2), rgba(76,224,210,0.15));
+  border: 1px solid rgba(124,92,252,0.35);
+  border-radius: 16px; padding: 14px; margin-bottom: 14px; text-align: center;
+}
+.daily-banner .db-title { font-family: 'Sora', sans-serif; font-weight: 700; font-size: 0.95rem; }
+.daily-banner .db-sub { color: var(--muted); font-size: 0.75rem; margin-top: 3px; }
+
+/* Bottom nav for home extras */
+.home-actions { display: flex; gap: 8px; margin-top: 14px; }
+.home-action-btn {
+  flex: 1; padding: 10px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04); color: var(--text); font-size: 0.78rem;
+  font-family: 'Sora', sans-serif; font-weight: 600; cursor: pointer; text-align: center;
+}
+.home-action-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+
+/* Streak */
+.streak-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: rgba(255,184,77,0.12); border: 1px solid rgba(255,184,77,0.3);
+  border-radius: 100px; padding: 4px 10px; font-size: 0.72rem; color: var(--amber);
+  font-weight: 600;
+}
+
+/* True/False special */
+.tf-options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.tf-btn {
+  padding: 22px; border-radius: 16px; font-family: 'Sora', sans-serif; font-weight: 700; font-size: 1.1rem;
+  border: none; cursor: pointer; color: #fff;
+}
+.tf-true { background: linear-gradient(135deg, #00c9a7, #00e0c0); box-shadow: 0 6px 20px rgba(0,201,167,0.35); }
+.tf-false { background: linear-gradient(135deg, #FF5C7A, #ff8a9e); box-shadow: 0 6px 20px rgba(255,92,122,0.35); }
+
+/* Loading spinner */
+.spinner {
+  width: 28px; height: 28px; border: 3px solid rgba(255,255,255,0.1);
+  border-top-color: var(--cyan); border-radius: 50%; animation: spin 0.7s linear infinite; margin: 20px auto;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
+  background: rgba(20,27,48,0.95); border: 1px solid var(--cyan); color: var(--text);
+  padding: 12px 20px; border-radius: 12px; font-size: 0.88rem; z-index: 200;
+  transition: transform 0.3s ease; pointer-events: none; max-width: 90%;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* Difficulty pills */
+.diff-pills { display: flex; gap: 8px; margin-bottom: 14px; justify-content: center; }
+.diff-pill {
+  padding: 6px 14px; border-radius: 100px; font-size: 0.75rem; font-weight: 600;
+  border: 1px solid rgba(255,255,255,0.15); background: transparent; color: var(--muted); cursor: pointer;
+}
+.diff-pill.active { background: rgba(124,92,252,0.2); border-color: var(--violet); color: var(--text); }
+
+/* ===== Colorful Home + Simple Navigation Upgrade ===== */
+.homeScreen { position: relative; }
+#homeScreen { background: linear-gradient(180deg, rgba(124,92,252,.10), rgba(76,224,210,.04)); border-radius: 20px; padding: 8px; }
+#homeScreen .modegrid { gap: 12px; }
+#homeScreen .modecard { border: 0; color: #fff; min-height: 76px; border-radius: 18px; box-shadow: 0 8px 24px rgba(0,0,0,.22); transition: transform .15s ease, filter .15s ease; }
+#homeScreen .modecard:active { transform: scale(.98); }
+#homeScreen .modecard:hover { filter: brightness(1.08); }
+#homeScreen .mode-a { background: linear-gradient(135deg,#7c5cfc,#4a9eff); }
+#homeScreen .mode-b { background: linear-gradient(135deg,#00a99a,#4ce0d2); }
+#homeScreen .mode-c { background: linear-gradient(135deg,#ff7a45,#ffb84d); }
+#homeScreen .mode-d { background: linear-gradient(135deg,#ff3f70,#ff7aa2); }
+#homeScreen .mode-e { background: linear-gradient(135deg,#5b4bdb,#9b6cff); }
+#homeScreen .home-actions { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:14px; }
+#homeScreen .home-action-btn { border:1px solid rgba(255,255,255,.14); border-radius:13px; padding:11px 6px; color:#fff; background:rgba(255,255,255,.07); font-size:.75rem; }
+#homeScreen .profile-badge { background:linear-gradient(135deg,rgba(124,92,252,.22),rgba(76,224,210,.15)); border:1px solid rgba(255,255,255,.10); border-radius:16px; }
+.auto-back { display:flex !important; align-items:center; gap:7px; width:max-content; padding:8px 12px !important; margin:0 0 10px 0 !important; border-radius:10px !important; background:rgba(255,255,255,.06) !important; color:var(--text) !important; border:1px solid rgba(255,255,255,.10) !important; }
+.auto-back:hover { background:rgba(124,92,252,.18) !important; color:#fff !important; }
+@media(max-width:420px){ #homeScreen .home-actions{grid-template-columns:1fr;} }
+/* ===== Neuron Quiz Pro unified option theme ===== */
+.opt.color-0,.opt.color-1,.opt.color-2,.opt.color-3 {
+  background: linear-gradient(135deg, rgba(124,92,252,.22), rgba(76,224,210,.14)) !important;
+  border: 1px solid rgba(124,92,252,.32);
+  box-shadow: 0 4px 14px rgba(11,15,25,.18) !important;
+  color: var(--text);
+  text-shadow: none;
+}
+.opt:hover { border-color: var(--cyan); background: linear-gradient(135deg, rgba(124,92,252,.30), rgba(76,224,210,.20)) !important; }
+.opt.correct { background: linear-gradient(135deg, rgba(76,224,210,.45), rgba(124,92,252,.22)) !important; border-color: var(--cyan) !important; }
+.opt.wrong { background: linear-gradient(135deg, rgba(255,92,122,.30), rgba(124,92,252,.16)) !important; border-color: var(--danger) !important; }
+
+/* ===== Simple one-line bottom navigation ===== */
+.bottom-nav {
+  display:grid; grid-template-columns:repeat(5,1fr); gap:4px; margin-top:16px; padding:7px 4px;
+  background:rgba(13,18,32,.92); border:1px solid rgba(255,255,255,.10); border-radius:16px;
+  position:sticky; bottom:6px; z-index:20; backdrop-filter:blur(12px);
+}
+.bottom-nav-btn { background:transparent; border:0; color:var(--muted); cursor:pointer; min-width:0; padding:7px 2px; border-radius:11px; font-family:'Sora',sans-serif; }
+.bottom-nav-btn span { display:block; font-size:1rem; line-height:1.1; }
+.bottom-nav-btn small { display:block; font-size:.56rem; margin-top:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.bottom-nav-btn.active,.bottom-nav-btn:hover { color:var(--cyan); background:rgba(124,92,252,.12); }
+@media(max-width:380px){ .bottom-nav-btn small{font-size:.50rem;} }
+</style>
+<style>
+html,body{width:100%;min-height:100%;margin:0;padding:0;overflow-x:hidden}
+body{min-height:100vh}
+.app,.container,.page,.screen,.main-content{width:100%;max-width:none;box-sizing:border-box}
+@media (display-mode: fullscreen){body{min-height:100vh}}
+.profile-field select,.profile-field input,select,input{box-sizing:border-box}
+.option.correct,.answer-option.correct,.quiz-option.correct{background:#22c55e !important;color:#fff !important;border-color:#22c55e !important}
+.option.wrong,.answer-option.wrong,.quiz-option.wrong{background:#ef4444 !important;color:#fff !important;border-color:#ef4444 !important}
+</style>
+<style>
+/* ===== True mobile full-screen layout ===== */
+html,body{width:100%;min-width:100%;height:100%;margin:0;padding:0;overflow-x:hidden;}
+body{display:block;min-height:100dvh;background:var(--bg);}
+.wrap{width:100%;max-width:none;height:100dvh;padding:0;margin:0;}
+.card{width:100%;max-width:none;height:100dvh;max-height:none;min-height:100dvh;margin:0;padding:18px 14px 14px;border:0;border-radius:0;overflow-y:auto;overflow-x:hidden;box-shadow:none;background:rgba(20,27,48,.96);}
+.card::-webkit-scrollbar{width:0;height:0;}
+.card{scrollbar-width:none;}
+.screen{width:100%;}
+.bottom-nav{position:sticky;bottom:0;margin-left:0;margin-right:0;border-radius:14px;}
+/* Keep profile fields always visible and readable */
+#profileScreen .field{display:block !important;width:100%;}
+#profileScreen .field label{display:block !important;color:var(--muted) !important;}
+#profClass,#profState{display:block !important;width:100% !important;min-height:46px !important;background:#141b30 !important;color:#EDEAF6 !important;border:1px solid rgba(76,224,210,.35) !important;opacity:1 !important;visibility:visible !important;}
+#profClass option,#profState option{background:#141b30;color:#EDEAF6;}
+.profile-summary{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 14px;}
+.profile-summary .ps-item{padding:10px 11px;border:1px solid rgba(76,224,210,.20);border-radius:12px;background:linear-gradient(135deg,rgba(124,92,252,.12),rgba(76,224,210,.08));}
+.profile-summary .ps-label{font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
+.profile-summary .ps-value{font-family:'Sora',sans-serif;font-weight:700;font-size:.84rem;margin-top:3px;color:var(--text);}
+</style>
+</head>
+<body>
+<canvas id="net"></canvas>
+<canvas id="confetti"></canvas>
+<div class="wrap">
+  <div class="card">
+    <h1>Neuron Quiz Pro</h1>
+    <div class="sub">Master India • Science • World • Yourself</div>
+
+    <!-- ==================== PROFILE SETUP ==================== -->
+    <div id="profileScreen" class="screen">
+      <div class="sub" style="margin-top:-4px;">Create your learner profile</div>
+      <div class="profile-summary" aria-label="Current profile">
+        <div class="ps-item"><div class="ps-label">Class</div><div class="ps-value" id="profileClassPreview">Not selected</div></div>
+        <div class="ps-item"><div class="ps-label">State / UT</div><div class="ps-value" id="profileStatePreview">Not selected</div></div>
+      </div>
+      <div class="field">
+        <label>Your Name</label>
+        <input type="text" id="profName" placeholder="e.g. Aryan" maxlength="20">
+      </div>
+      <div class="field">
+        <label>Class Group</label>
+        <select id="profClass"></select>
+      </div>
+      <div class="field">
+        <label>Home State / UT</label>
+        <select id="profState"></select>
+      </div>
+      <button class="btn-primary" onclick="saveProfile()">Start Learning Journey →</button>
+    </div>
+
+    <!-- ==================== HOME ==================== -->
+    <div id="homeScreen" class="screen active">
+      <div class="profile-badge" id="profileBadge"></div>
+      <button class="lifeline-btn" id="profileActionBtn" style="width:100%;margin:8px 0 14px;text-align:center;" onclick="editProfile()">👤 Create / Edit Profile</button>
+      <div class="xp-bar-wrap" id="xpBarWrap">
+        <div class="xp-bar-label"><span id="xpLevelLabel">Level 1</span><span id="xpText">0 / 100 XP</span></div>
+        <div class="xp-bar"><div class="xp-bar-fill" id="xpFill" style="width:0%"></div></div>
+      </div>
+      <div id="dailyBanner" class="daily-banner" style="display:none;">
+        <div class="db-title">🔥 Daily Challenge Available!</div>
+        <div class="db-sub">Complete today's special quiz for bonus XP</div>
+        <button class="btn-primary" style="margin-top:10px;padding:10px;" onclick="startDailyChallenge()">Play Daily Challenge</button>
+      </div>
+      <div class="scoreboard" id="scoreboard" style="display:none;"></div>
+      <div class="modegrid">
+        <button class="modecard mode-a" onclick="openClassMode()">
+          <div class="icon">🎓</div>
+          <div><div class="ttl">Class & Subject Quiz</div><div class="dsc">Curriculum based • Class 1 to 12</div></div>
+        </button>
+        <button class="modecard mode-b" onclick="goTo('statePickScreen')">
+          <div class="icon">🗺️</div>
+          <div><div class="ttl">State GK Challenge</div><div class="dsc">All 28 states + 8 UTs covered</div></div>
+        </button>
+        <button class="modecard mode-c" onclick="startQuiz(GK_DATA, 'General Knowledge', 'mcq')">
+          <div class="icon">🌍</div>
+          <div><div class="ttl">GK Marathon</div><div class="dsc">World, Science, History, Current Affairs</div></div>
+        </button>
+        <button class="modecard mode-d" onclick="startTrueFalse()">
+          <div class="icon">⚡</div>
+          <div><div class="ttl">True / False Blitz</div><div class="dsc">Fast paced • High intensity</div></div>
+        </button>
+        <button class="modecard mode-e" onclick="startSpeedRound()">
+          <div class="icon">⏱️</div>
+          <div><div class="ttl">Speed Round</div><div class="dsc">10 questions • 8 seconds each</div></div>
+        </button>
+      </div>
+      <nav class="bottom-nav" aria-label="Main navigation">
+        <button class="bottom-nav-btn active" onclick="goTo('homeScreen')"><span>⌂</span><small>Home</small></button>
+        <button class="bottom-nav-btn" onclick="goTo('leaderboardScreen')"><span>🏆</span><small>Leaderboard</small></button>
+        <button class="bottom-nav-btn" onclick="goTo('achievementsScreen')"><span>🏅</span><small>Achievement</small></button>
+        <button class="bottom-nav-btn" onclick="goTo('settingsScreen')"><span>⚙</span><small>Setting</small></button>
+        <button class="bottom-nav-btn" onclick="editProfile()"><span>👤</span><small>Profile</small></button>
+      </nav>
+    </div>
+
+    <!-- ==================== CLASS PICK ==================== -->
+    <div id="classPickScreen" class="screen">
+      <button class="backbtn" onclick="goTo('homeScreen')">← Back</button>
+      <div class="sub" style="margin-top:-4px;">Choose your class group</div>
+      <div class="choicegrid" id="classGrid"></div>
+    </div>
+
+    <!-- ==================== SUBJECT PICK ==================== -->
+    <div id="subjectPickScreen" class="screen">
+      <button class="backbtn" onclick="goTo('homeScreen')">← Back</button>
+      <div class="sub" style="margin-top:-4px;" id="subjectSubLabel">Choose a subject</div>
+      <div class="diff-pills" id="diffPills">
+        <button class="diff-pill active" data-diff="all" onclick="setDifficulty('all')">All</button>
+        <button class="diff-pill" data-diff="easy" onclick="setDifficulty('easy')">Easy</button>
+        <button class="diff-pill" data-diff="medium" onclick="setDifficulty('medium')">Medium</button>
+        <button class="diff-pill" data-diff="hard" onclick="setDifficulty('hard')">Hard</button>
+      </div>
+      <div class="choicegrid" id="subjectGrid"></div>
+    </div>
+
+    <!-- ==================== CHAPTER PICK ==================== -->
+    <div id="chapterPickScreen" class="screen">
+      <button class="backbtn" onclick="goTo('subjectPickScreen')">← Back</button>
+      <div class="sub" style="margin-top:-4px;" id="chapterSubLabel">Choose a chapter</div>
+      <div class="choicegrid" id="chapterGrid"></div>
+    </div>
+
+    <!-- ==================== STATE PICK ==================== -->
+    <div id="statePickScreen" class="screen">
+      <button class="backbtn" onclick="goTo('homeScreen')">← Back</button>
+      <div class="sub" style="margin-top:-4px;">Choose a State / UT</div>
+      <input type="text" class="search-box" id="stateSearch" placeholder="🔍 Search state..." oninput="filterStates()">
+      <div class="choicegrid" id="stateGrid"></div>
+    </div>
+
+    <!-- ==================== QUIZ ==================== -->
+    <div id="quizScreen" class="screen">
+      <div class="hud">
+        <div class="stat"><div class="num" id="scoreNum">0</div><div class="lbl">Score</div></div>
+        <div class="stat"><div class="num" id="streakNum">0</div><div class="lbl">Streak</div></div>
+        <div class="stat"><div class="num" id="progNum">1/10</div><div class="lbl">Question</div></div>
+      </div>
+      <div class="progressbar"><div class="progressbar-fill" id="progFill"></div></div>
+      <div class="timerbar"><div class="timerbar-fill" id="timerFill"></div></div>
+      <div class="lifeline-row">
+        <button class="lifeline-btn" id="maskBtn" onclick="useMask()">🎭 50-50</button>
+        <button class="lifeline-btn" id="skipBtn" onclick="useSkip()">⏭️ Skip</button>
+        <button class="lifeline-btn" id="hintBtn" onclick="useHint()">💡 Hint</button>
+      </div>
+      <div class="question-box">
+        <div>
+          <span class="qtag" id="qtag">Quiz</span>
+          <div class="q" id="qtext">–</div>
+          <div id="hintText" style="display:none;margin-top:8px;font-size:0.8rem;color:var(--amber);"></div>
+        </div>
+      </div>
+      <div class="options" id="options"></div>
+    </div>
+
+    <!-- ==================== RESULTS ==================== -->
+    <div id="resultScreen" class="screen">
+      <div class="result-hero">
+        <div class="result-score" id="resultScore">0/10</div>
+        <div class="result-msg" id="resultMsg">Well played!</div>
+        <div style="margin-top:8px;"><span class="streak-badge" id="resultStreak">🔥 Best streak: 0</span></div>
+      </div>
+      <div class="result-stats">
+        <div class="result-stat"><div class="rs-num" id="rsAccuracy">0%</div><div class="rs-lbl">Accuracy</div></div>
+        <div class="result-stat"><div class="rs-num" id="rsXP">+0</div><div class="rs-lbl">XP Earned</div></div>
+        <div class="result-stat"><div class="rs-num" id="rsTime">0s</div><div class="rs-lbl">Avg Time</div></div>
+      </div>
+      <div class="sub" style="text-align:left;margin-bottom:8px;">Review Answers</div>
+      <div class="review-list" id="reviewList"></div>
+      <button class="btn-primary" onclick="retryQuiz()">🔁 Play Again</button>
+      <button class="btn-secondary" onclick="goTo('homeScreen')">🏠 Back to Home</button>
+    </div>
+
+    <!-- ==================== ACHIEVEMENTS ==================== -->
+    <div id="achievementsScreen" class="screen">
+      <button class="backbtn" onclick="goTo('homeScreen')">← Back</button>
+      <div class="sub" style="margin-top:-4px;">Your Achievements</div>
+      <div class="ach-grid" id="achGrid"></div>
+    </div>
+
+    <!-- ==================== LEADERBOARD ==================== -->
+    <div id="leaderboardScreen" class="screen">
+      <button class="backbtn" onclick="goTo('homeScreen')">← Back</button>
+      <div class="sub" style="margin-top:-4px;">Local Leaderboard (Top Scores)</div>
+      <div id="leaderboardList"></div>
+      <button class="btn-secondary" onclick="clearLeaderboard()" style="margin-top:16px;">Clear Leaderboard</button>
+    </div>
+
+    <!-- ==================== SETTINGS ==================== -->
+    <div id="settingsScreen" class="screen">
+      <button class="backbtn" onclick="goTo('homeScreen')">← Back</button>
+      <div class="sub" style="margin-top:-4px;">Settings</div>
+      <div class="setting-row">
+        <div><div class="setting-label">Sound Effects</div><div class="setting-desc">Correct / Wrong / Level up sounds</div></div>
+        <div class="toggle on" id="toggleSound" onclick="toggleSetting('sound')"></div>
+      </div>
+      <div class="setting-row">
+        <div><div class="setting-label">Vibration</div><div class="setting-desc">Haptic feedback on answers</div></div>
+        <div class="toggle on" id="toggleVibrate" onclick="toggleSetting('vibrate')"></div>
+      </div>
+      <div class="setting-row">
+        <div><div class="setting-label">Timer Duration</div><div class="setting-desc">Seconds per question</div></div>
+        <select id="timerSelect" onchange="updateTimerSetting()" style="width:80px;padding:6px 8px;border-radius:8px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--text);">
+          <option value="10">10s</option>
+          <option value="15" selected>15s</option>
+          <option value="20">20s</option>
+          <option value="30">30s</option>
+        </select>
+      </div>
+      <div class="setting-row">
+        <div><div class="setting-label">Questions per Quiz</div><div class="setting-desc">How many questions in a round</div></div>
+        <select id="qCountSelect" onchange="updateQCountSetting()" style="width:80px;padding:6px 8px;border-radius:8px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--text);">
+          <option value="5">5</option>
+          <option value="8">8</option>
+          <option value="10" selected>10</option>
+          <option value="15">15</option>
+        </select>
+      </div>
+      <div class="setting-row">
+        <div><div class="setting-label">Reset All Progress</div><div class="setting-desc">Clears XP, achievements & stats</div></div>
+        <button class="lifeline-btn" style="color:var(--danger);border-color:rgba(255,92,122,0.4);" onclick="resetProgress()">Reset</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   NEURON QUIZ PRO — Full Featured Educational App
+   ============================================================ */
+
+/* ---------- Neural Network Background ---------- */
+const canvas = document.getElementById('net');
+const ctx = canvas.getContext('2d');
+let W, H, nodes = [], flashLines = [];
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+for (let i = 0; i < 52; i++) {
+  nodes.push({
+    x: Math.random() * W, y: Math.random() * H,
+    vx: (Math.random() - 0.5) * 0.28, vy: (Math.random() - 0.5) * 0.28,
+    r: 1 + Math.random() * 1.6
+  });
+}
+function drawNet() {
+  ctx.clearRect(0, 0, W, H);
+  for (const n of nodes) {
+    n.x += n.vx; n.y += n.vy;
+    if (n.x < 0 || n.x > W) n.vx *= -1;
+    if (n.y < 0 || n.y > H) n.vy *= -1;
+  }
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i + 1; j < nodes.length; j++) {
+      const a = nodes[i], b = nodes[j];
+      const d = Math.hypot(a.x - b.x, a.y - b.y);
+      if (d < 135) {
+        ctx.strokeStyle = `rgba(124,92,252,${0.13 * (1 - d / 135)})`;
+        ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+      }
+    }
+  }
+  flashLines = flashLines.filter(f => f.life > 0);
+  for (const f of flashLines) {
+    ctx.strokeStyle = `rgba(76,224,210,${f.life})`;
+    ctx.lineWidth = 1.7;
+    ctx.beginPath(); ctx.moveTo(f.a.x, f.a.y); ctx.lineTo(f.b.x, f.b.y); ctx.stroke();
+    f.life -= 0.022;
+  }
+  for (const n of nodes) {
+    ctx.fillStyle = 'rgba(237,234,246,0.55)';
+    ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, 7); ctx.fill();
+  }
+  requestAnimationFrame(drawNet);
+}
+drawNet();
+function burstFlash() {
+  const s = [...nodes].sort(() => Math.random() - 0.5);
+  for (let i = 0; i < 8; i += 2) flashLines.push({ a: s[i], b: s[i + 1], life: 1 });
+}
+
+/* ---------- Confetti System ---------- */
+const confettiCanvas = document.getElementById('confetti');
+const confCtx = confettiCanvas.getContext('2d');
+let confettiPieces = [];
+function resizeConfetti() {
+  confettiCanvas.width = window.innerWidth;
+  confettiCanvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeConfetti);
+resizeConfetti();
+function spawnConfetti(count = 80) {
+  const colors = ['#4CE0D2', '#7C5CFC', '#FFB84D', '#FF5C7A', '#00c9a7', '#4A9EFF'];
+  for (let i = 0; i < count; i++) {
+    confettiPieces.push({
+      x: Math.random() * confettiCanvas.width,
+      y: -20 - Math.random() * 100,
+      w: 6 + Math.random() * 8,
+      h: 4 + Math.random() * 6,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      vx: (Math.random() - 0.5) * 6,
+      vy: 2 + Math.random() * 4,
+      rot: Math.random() * 360,
+      rotSpeed: (Math.random() - 0.5) * 12
+    });
+  }
+}
+function drawConfetti() {
+  confCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+  confettiPieces = confettiPieces.filter(p => p.y < confettiCanvas.height + 40);
+  for (const p of confettiPieces) {
+    p.x += p.vx; p.y += p.vy; p.rot += p.rotSpeed; p.vy += 0.08;
+    confCtx.save();
+    confCtx.translate(p.x, p.y);
+    confCtx.rotate((p.rot * Math.PI) / 180);
+    confCtx.fillStyle = p.color;
+    confCtx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+    confCtx.restore();
+  }
+  if (confettiPieces.length) requestAnimationFrame(drawConfetti);
+}
+
+/* ---------- Sound System (Web Audio) ---------- */
+let audioCtx = null;
+function getAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+function playTone(freq, duration, type = 'sine', volume = 0.15) {
+  if (!settings.sound) return;
+  try {
+    const ctx = getAudio();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = type;
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(volume, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.start(); osc.stop(ctx.currentTime + duration);
+  } catch (e) {}
+}
+function playCorrect() { playTone(880, 0.12, 'sine', 0.12); setTimeout(() => playTone(1100, 0.15, 'sine', 0.1), 80); }
+function playWrong() { playTone(220, 0.25, 'sawtooth', 0.08); }
+function playLevelUp() { playTone(523, 0.12); setTimeout(() => playTone(659, 0.12), 100); setTimeout(() => playTone(784, 0.2), 200); }
+function playClick() { playTone(600, 0.05, 'sine', 0.06); }
+
+/* ---------- Settings & Persistence ---------- */
+let settings = { sound: true, vibrate: true, timer: 15, qCount: 10 };
+function loadSettings() {
+  try {
+    const s = JSON.parse(localStorage.getItem('nq_settings') || '{}');
+    if (s && typeof s === 'object') settings = { ...settings, ...s };
+  } catch (e) {}
+  settings.sound = settings.sound !== false;
+  settings.vibrate = false;
+  settings.timer = [5,8,10,15,20,30].includes(Number(settings.timer)) ? Number(settings.timer) : 15;
+  settings.qCount = [5,10,15,20].includes(Number(settings.qCount)) ? Number(settings.qCount) : 10;
+  const sound = document.getElementById('toggleSound');
+  const vibrate = document.getElementById('toggleVibrate');
+  const timer = document.getElementById('timerSelect');
+  const qCount = document.getElementById('qCountSelect');
+  if (sound) sound.classList.toggle('on', settings.sound);
+  if (vibrate) vibrate.classList.toggle('on', settings.vibrate);
+  if (timer) timer.value = String(settings.timer);
+  if (qCount) qCount.value = String(settings.qCount);
+  saveSettings();
+}
+function saveSettings() { localStorage.setItem('nq_settings', JSON.stringify(settings)); }
+function toggleSetting(key) {
+  settings[key] = key === 'vibrate' ? false : !settings[key];
+  document.getElementById('toggle' + key.charAt(0).toUpperCase() + key.slice(1)).classList.toggle('on', settings[key]);
+  saveSettings();
+  playClick();
+}
+function updateTimerSetting() { settings.timer = +document.getElementById('timerSelect').value; saveSettings(); }
+function updateQCountSetting() { settings.qCount = +document.getElementById('qCountSelect').value; saveSettings(); }
+
+/* ---------- Profile, XP, Stats ---------- */
+let profile = { name: '', cls: '', state: '', xp: 0, level: 1, totalQuizzes: 0, totalCorrect: 0, totalQuestions: 0, bestStreak: 0, achievements: [] };
+function loadProfile() {
+  try {
+    const p = JSON.parse(localStorage.getItem('nq_profile') || 'null');
+    if (p) {
+      profile = { ...profile, ...p };
+      const oldToNew = {'Class 1-5':'Class 1','Class 6-8':'Class 6','Class 9-10':'Class 9','Class 11-12':'Class 11'};
+      if (oldToNew[profile.cls]) profile.cls = oldToNew[profile.cls];
+    }
+  } catch (e) {}
+}
+function saveProfileData() { localStorage.setItem('nq_profile', JSON.stringify(profile)); }
+function xpForLevel(lvl) { return lvl * 100; }
+function addXP(amount) {
+  profile.xp += amount;
+  let leveled = false;
+  while (profile.xp >= xpForLevel(profile.level)) {
+    profile.xp -= xpForLevel(profile.level);
+    profile.level++;
+    leveled = true;
+  }
+  saveProfileData();
+  renderXPBar();
+  if (leveled) {
+    playLevelUp();
+    showToast(`🎉 Level Up! You are now Level ${profile.level}`);
+    spawnConfetti(60);
+  }
+  return amount;
+}
+function renderXPBar() {
+  const needed = xpForLevel(profile.level);
+  const pct = Math.min(100, (profile.xp / needed) * 100);
+  document.getElementById('xpLevelLabel').textContent = `Level ${profile.level}`;
+  document.getElementById('xpText').textContent = `${profile.xp} / ${needed} XP`;
+  document.getElementById('xpFill').style.width = pct + '%';
+}
+
+/* ---------- Achievements ---------- */
+const ACHIEVEMENTS = [
+  { id: 'first_quiz', name: 'First Steps', desc: 'Complete your first quiz', icon: '🌱', check: p => p.totalQuizzes >= 1 },
+  { id: 'quiz_10', name: 'Dedicated', desc: 'Complete 10 quizzes', icon: '📚', check: p => p.totalQuizzes >= 10 },
+  { id: 'quiz_50', name: 'Scholar', desc: 'Complete 50 quizzes', icon: '🎓', check: p => p.totalQuizzes >= 50 },
+  { id: 'perfect', name: 'Perfectionist', desc: 'Score 100% in any quiz', icon: '💯', check: p => p.achievements.includes('perfect_flag') },
+  { id: 'streak_5', name: 'On Fire', desc: 'Get a 5+ streak', icon: '🔥', check: p => p.bestStreak >= 5 },
+  { id: 'streak_10', name: 'Unstoppable', desc: 'Get a 10+ streak', icon: '⚡', check: p => p.bestStreak >= 10 },
+  { id: 'level_5', name: 'Rising Star', desc: 'Reach Level 5', icon: '⭐', check: p => p.level >= 5 },
+  { id: 'level_10', name: 'Master Mind', desc: 'Reach Level 10', icon: '🧠', check: p => p.level >= 10 },
+  { id: 'state_explorer', name: 'State Explorer', desc: 'Play 5 different state quizzes', icon: '🗺️', check: p => (p.statesPlayed || []).length >= 5 },
+  { id: 'gk_master', name: 'GK Master', desc: 'Answer 100 GK questions correctly', icon: '🌍', check: p => (p.gkCorrect || 0) >= 100 },
+  { id: 'speed_demon', name: 'Speed Demon', desc: 'Complete a Speed Round', icon: '⏱️', check: p => p.achievements.includes('speed_flag') },
+  { id: 'daily', name: 'Daily Grinder', desc: 'Complete a Daily Challenge', icon: '📅', check: p => p.achievements.includes('daily_flag') }
+];
+function checkAchievements() {
+  let newOnes = [];
+  for (const a of ACHIEVEMENTS) {
+    if (!profile.achievements.includes(a.id) && a.check(profile)) {
+      profile.achievements.push(a.id);
+      newOnes.push(a);
+    }
+  }
+  if (newOnes.length) {
+    saveProfileData();
+    newOnes.forEach(a => showToast(`🏆 Achievement Unlocked: ${a.name}`));
+    spawnConfetti(40);
+  }
+}
+function renderAchievements() {
+  const grid = document.getElementById('achGrid');
+  grid.innerHTML = ACHIEVEMENTS.map(a => {
+    const unlocked = profile.achievements.includes(a.id);
+    return `<div class="ach-card ${unlocked ? '' : 'locked'}">
+      <div class="ach-icon">${a.icon}</div>
+      <div class="ach-name">${a.name}</div>
+      <div class="ach-desc">${a.desc}</div>
+    </div>`;
+  }).join('');
+}
+
+/* ---------- Leaderboard ---------- */
+function getLeaderboard() {
+  try { return JSON.parse(localStorage.getItem('nq_leaderboard') || '[]'); } catch { return []; }
+}
+function addToLeaderboard(score, total, tag) {
+  const lb = getLeaderboard();
+  lb.push({ name: profile.name, score, total, tag, date: new Date().toISOString(), pct: Math.round((score / total) * 100) });
+  lb.sort((a, b) => b.pct - a.pct || b.score - a.score);
+  localStorage.setItem('nq_leaderboard', JSON.stringify(lb.slice(0, 20)));
+}
+function renderLeaderboard() {
+  const lb = getLeaderboard();
+  const list = document.getElementById('leaderboardList');
+  if (!lb.length) {
+    list.innerHTML = '<div class="sub">No scores yet. Play some quizzes!</div>';
+    return;
+  }
+  list.innerHTML = lb.map((e, i) => {
+    const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+    return `<div class="lb-row">
+      <div class="lb-rank ${rankClass}">${i + 1}</div>
+      <div class="lb-name">${e.name}</div>
+      <div class="lb-score">${e.score}/${e.total} (${e.pct}%)</div>
+    </div>`;
+  }).join('');
+}
+function clearLeaderboard() {
+  if (confirm('Clear all leaderboard scores?')) {
+    localStorage.removeItem('nq_leaderboard');
+    renderLeaderboard();
+    showToast('Leaderboard cleared');
+  }
+}
+
+/* ---------- Toast ---------- */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+/* ---------- Massive Question Data ---------- */
+const CLASS_SUBJECT_DATA = {
+  "Class 1-5": {
+    "Math": [
+      {q:"What is 7 + 6?", options:["12","13","14","11"], answer:"13", difficulty:"easy", hint:"Count on your fingers from 7."},
+      {q:"How many sides does a triangle have?", options:["2","3","4","5"], answer:"3", difficulty:"easy", hint:"Tri means three."},
+      {q:"What is 15 − 9?", options:["6","5","7","8"], answer:"6", difficulty:"easy"},
+      {q:"Which number comes after 99?", options:["100","98","101","90"], answer:"100", difficulty:"easy"},
+      {q:"What is 4 × 5?", options:["18","20","16","24"], answer:"20", difficulty:"easy"},
+      {q:"What is 9 + 8?", options:["16","17","18","15"], answer:"17", difficulty:"easy"},
+      {q:"How many days are in a week?", options:["5","6","7","8"], answer:"7", difficulty:"easy"},
+      {q:"What is half of 10?", options:["4","5","6","3"], answer:"5", difficulty:"easy"},
+      {q:"Which is bigger: 45 or 54?", options:["45","54","Same","Cannot say"], answer:"54", difficulty:"easy"},
+      {q:"What is 6 × 3?", options:["18","16","20","15"], answer:"18", difficulty:"easy"},
+      {q:"How many months have 31 days?", options:["5","6","7","8"], answer:"7", difficulty:"medium"},
+      {q:"What is 100 − 37?", options:["63","73","67","53"], answer:"63", difficulty:"medium"},
+      {q:"What is 8 × 7?", options:["54","56","58","48"], answer:"56", difficulty:"medium"},
+      {q:"How many hours in 2 days?", options:["24","36","48","12"], answer:"48", difficulty:"medium"},
+      {q:"What is the next even number after 14?", options:["15","16","18","12"], answer:"16", difficulty:"easy"}
+    ],
+    "Science": [
+      {q:"Which part of the plant makes food?", options:["Root","Leaf","Stem","Flower"], answer:"Leaf", difficulty:"easy", hint:"Green part of the plant."},
+      {q:"How many senses does a human have?", options:["3","4","5","6"], answer:"5", difficulty:"easy"},
+      {q:"Which animal is known as man's best friend?", options:["Cat","Dog","Cow","Horse"], answer:"Dog", difficulty:"easy"},
+      {q:"What do we call water in solid form?", options:["Steam","Ice","Vapour","Cloud"], answer:"Ice", difficulty:"easy"},
+      {q:"Which gas do we need to breathe?", options:["Carbon dioxide","Oxygen","Nitrogen","Helium"], answer:"Oxygen", difficulty:"easy"},
+      {q:"What is the color of the sky on a clear day?", options:["Green","Blue","Red","Yellow"], answer:"Blue", difficulty:"easy"},
+      {q:"Which planet do we live on?", options:["Mars","Venus","Earth","Jupiter"], answer:"Earth", difficulty:"easy"},
+      {q:"What do bees make?", options:["Milk","Honey","Butter","Cheese"], answer:"Honey", difficulty:"easy"},
+      {q:"How many legs does a spider have?", options:["6","8","4","10"], answer:"8", difficulty:"medium"},
+      {q:"What is the largest animal on Earth?", options:["Elephant","Blue Whale","Giraffe","Shark"], answer:"Blue Whale", difficulty:"medium"},
+      {q:"Which organ pumps blood?", options:["Brain","Lungs","Heart","Liver"], answer:"Heart", difficulty:"easy"},
+      {q:"What do plants need to grow?", options:["Sunlight","Darkness","Only water","Plastic"], answer:"Sunlight", difficulty:"easy"},
+      {q:"Which season comes after summer?", options:["Winter","Spring","Monsoon","Autumn"], answer:"Monsoon", difficulty:"medium"},
+      {q:"What is H2O commonly known as?", options:["Air","Water","Fire","Soil"], answer:"Water", difficulty:"medium"},
+      {q:"Which bird cannot fly?", options:["Eagle","Penguin","Sparrow","Crow"], answer:"Penguin", difficulty:"medium"}
+    ],
+    "English": [
+      {q:"What is the opposite of 'Big'?", options:["Tall","Small","Wide","Fat"], answer:"Small", difficulty:"easy"},
+      {q:"Choose the correct spelling.", options:["Skool","School","Schol","Scool"], answer:"School", difficulty:"easy"},
+      {q:"'The cat sat on the mat.' What is the verb?", options:["Cat","Sat","Mat","The"], answer:"Sat", difficulty:"easy"},
+      {q:"What is the plural of 'Child'?", options:["Childs","Childes","Children","Childrens"], answer:"Children", difficulty:"medium"},
+      {q:"Which word rhymes with 'Cake'?", options:["Cup","Lake","Ball","Book"], answer:"Lake", difficulty:"easy"},
+      {q:"What is the opposite of 'Happy'?", options:["Joyful","Sad","Excited","Glad"], answer:"Sad", difficulty:"easy"},
+      {q:"Fill in: I ___ a student.", options:["am","is","are","be"], answer:"am", difficulty:"easy"},
+      {q:"Which is a noun?", options:["Run","Beautiful","Apple","Quickly"], answer:"Apple", difficulty:"easy"},
+      {q:"What is the past tense of 'go'?", options:["Goed","Went","Gone","Going"], answer:"Went", difficulty:"medium"},
+      {q:"Choose the correct article: ___ apple.", options:["A","An","The","No article"], answer:"An", difficulty:"medium"},
+      {q:"What is the opposite of 'Hot'?", options:["Warm","Cold","Cool","Mild"], answer:"Cold", difficulty:"easy"},
+      {q:"Which word means 'very big'?", options:["Tiny","Huge","Small","Little"], answer:"Huge", difficulty:"easy"},
+      {q:"'She sings well.' What is 'well'?", options:["Noun","Verb","Adjective","Adverb"], answer:"Adverb", difficulty:"hard"},
+      {q:"Plural of 'Mouse' is?", options:["Mouses","Mice","Mouse","Meese"], answer:"Mice", difficulty:"medium"},
+      {q:"Which is a proper noun?", options:["city","river","Delhi","boy"], answer:"Delhi", difficulty:"medium"}
+    ],
+    "Social Studies": [
+      {q:"What is the capital of India?", options:["Mumbai","New Delhi","Kolkata","Chennai"], answer:"New Delhi", difficulty:"easy"},
+      {q:"Which festival is known as the festival of lights?", options:["Holi","Diwali","Eid","Christmas"], answer:"Diwali", difficulty:"easy"},
+      {q:"Which direction does the sun rise from?", options:["West","North","East","South"], answer:"East", difficulty:"easy"},
+      {q:"What do we call a place where we buy vegetables?", options:["Market","School","Hospital","Park"], answer:"Market", difficulty:"easy"},
+      {q:"Who is the current President of India? (approx knowledge)", options:["A leader of India","A film star","A sportsman","A singer"], answer:"A leader of India", difficulty:"easy"},
+      {q:"How many colors are in the Indian flag?", options:["2","3","4","5"], answer:"3", difficulty:"easy"},
+      {q:"What is the national animal of India?", options:["Lion","Tiger","Elephant","Peacock"], answer:"Tiger", difficulty:"easy"},
+      {q:"What is the national bird of India?", options:["Crow","Peacock","Sparrow","Eagle"], answer:"Peacock", difficulty:"easy"},
+      {q:"Which is the largest ocean?", options:["Atlantic","Indian","Pacific","Arctic"], answer:"Pacific", difficulty:"medium"},
+      {q:"India is in which continent?", options:["Africa","Asia","Europe","Australia"], answer:"Asia", difficulty:"easy"},
+      {q:"What is the currency of India?", options:["Dollar","Rupee","Yen","Euro"], answer:"Rupee", difficulty:"easy"},
+      {q:"Who is called the Father of the Nation?", options:["Nehru","Gandhi","Patel","Bose"], answer:"Gandhi", difficulty:"easy"},
+      {q:"In which year did India get independence?", options:["1945","1947","1950","1952"], answer:"1947", difficulty:"medium"},
+      {q:"What is the national flower of India?", options:["Rose","Lotus","Sunflower","Jasmine"], answer:"Lotus", difficulty:"medium"},
+      {q:"Which is the highest mountain peak in the world?", options:["K2","Everest","Kanchenjunga","Nanda Devi"], answer:"Everest", difficulty:"medium"}
+    ]
+  },
+  "Class 6-8": {
+    "Math": [
+      {q:"What is 3/4 as a percentage?", options:["50%","75%","25%","80%"], answer:"75%", difficulty:"easy"},
+      {q:"What is the value of π approximately?", options:["3.14","2.71","1.61","4.13"], answer:"3.14", difficulty:"easy"},
+      {q:"Simplify: 5 + 3 × 2", options:["16","11","13","10"], answer:"11", difficulty:"medium", hint:"Multiplication before addition."},
+      {q:"Sum of angles in a triangle?", options:["90°","180°","270°","360°"], answer:"180°", difficulty:"easy"},
+      {q:"Square root of 144?", options:["11","12","13","14"], answer:"12", difficulty:"easy"},
+      {q:"What is 15% of 200?", options:["20","30","40","25"], answer:"30", difficulty:"medium"},
+      {q:"LCM of 4 and 6?", options:["12","24","8","6"], answer:"12", difficulty:"medium"},
+      {q:"Area of a rectangle 5×8?", options:["13","40","26","35"], answer:"40", difficulty:"easy"},
+      {q:"What is (−3) + 7?", options:["−10","4","−4","10"], answer:"4", difficulty:"medium"},
+      {q:"Perimeter of a square of side 6?", options:["24","36","12","18"], answer:"24", difficulty:"easy"},
+      {q:"What is 2³?", options:["6","8","9","4"], answer:"8", difficulty:"easy"},
+      {q:"HCF of 18 and 24?", options:["6","8","12","4"], answer:"6", difficulty:"medium"},
+      {q:"Convert 0.5 to fraction.", options:["1/2","1/5","5/10","Both 1/2 and 5/10"], answer:"Both 1/2 and 5/10", difficulty:"medium"},
+      {q:"What is the mean of 2,4,6,8?", options:["4","5","6","7"], answer:"5", difficulty:"medium"},
+      {q:"Solve: x + 5 = 12", options:["5","6","7","8"], answer:"7", difficulty:"easy"}
+    ],
+    "Science": [
+      {q:"Basic unit of life?", options:["Atom","Cell","Tissue","Organ"], answer:"Cell", difficulty:"easy"},
+      {q:"Water boils at? (°C)", options:["50","90","100","120"], answer:"100", difficulty:"easy"},
+      {q:"Force that pulls objects to Earth?", options:["Magnetism","Gravity","Friction","Tension"], answer:"Gravity", difficulty:"easy"},
+      {q:"Gas released by plants in photosynthesis?", options:["CO2","Oxygen","Nitrogen","Hydrogen"], answer:"Oxygen", difficulty:"easy"},
+      {q:"Which is a state of matter?", options:["Energy","Gas","Force","Heat"], answer:"Gas", difficulty:"easy"},
+      {q:"What is the SI unit of force?", options:["Joule","Newton","Watt","Pascal"], answer:"Newton", difficulty:"medium"},
+      {q:"Which vitamin is produced in skin by sunlight?", options:["A","B","C","D"], answer:"D", difficulty:"medium"},
+      {q:"Process of converting solid to liquid?", options:["Freezing","Melting","Evaporation","Condensation"], answer:"Melting", difficulty:"easy"},
+      {q:"Largest organ of human body?", options:["Liver","Skin","Brain","Heart"], answer:"Skin", difficulty:"medium"},
+      {q:"What is the chemical formula of carbon dioxide?", options:["CO","CO2","C2O","O2"], answer:"CO2", difficulty:"easy"},
+      {q:"Which planet is closest to the Sun?", options:["Venus","Mercury","Earth","Mars"], answer:"Mercury", difficulty:"easy"},
+      {q:"What causes day and night?", options:["Revolution","Rotation","Orbit","None"], answer:"Rotation", difficulty:"medium"},
+      {q:"Blood is red due to?", options:["Platelets","Haemoglobin","Plasma","WBC"], answer:"Haemoglobin", difficulty:"medium"},
+      {q:"Which gas is used in fire extinguishers?", options:["Oxygen","CO2","Nitrogen","Hydrogen"], answer:"CO2", difficulty:"medium"},
+      {q:"What is the speed of light approximately?", options:["3×10⁸ m/s","3×10⁶ m/s","3×10⁵ m/s","3×10⁹ m/s"], answer:"3×10⁸ m/s", difficulty:"hard"}
+    ],
+    "English": [
+      {q:"Identify the noun: 'The dog ran quickly.'", options:["Ran","Quickly","Dog","The"], answer:"Dog", difficulty:"easy"},
+      {q:"Synonym of 'Happy'?", options:["Sad","Joyful","Angry","Tired"], answer:"Joyful", difficulty:"easy"},
+      {q:"Antonym of 'Ancient'?", options:["Old","Modern","Historic","Aged"], answer:"Modern", difficulty:"easy"},
+      {q:"Which is a proper noun?", options:["City","River","India","Country"], answer:"India", difficulty:"easy"},
+      {q:"She ___ to school every day.", options:["go","goes","going","gone"], answer:"goes", difficulty:"easy"},
+      {q:"What is a synonym of 'Brave'?", options:["Coward","Courageous","Weak","Fearful"], answer:"Courageous", difficulty:"easy"},
+      {q:"Identify the adverb: 'He runs fast.'", options:["He","Runs","Fast","None"], answer:"Fast", difficulty:"medium"},
+      {q:"Past participle of 'write'?", options:["Wrote","Written","Writing","Write"], answer:"Written", difficulty:"medium"},
+      {q:"Which is a conjunction?", options:["And","Quickly","Beautiful","House"], answer:"And", difficulty:"easy"},
+      {q:"'Although' is a?", options:["Noun","Preposition","Conjunction","Adjective"], answer:"Conjunction", difficulty:"medium"},
+      {q:"Plural of 'Criterion'?", options:["Criterions","Criteria","Criterias","None"], answer:"Criteria", difficulty:"hard"},
+      {q:"What is the comparative of 'good'?", options:["Gooder","Better","Best","More good"], answer:"Better", difficulty:"easy"},
+      {q:"Identify the preposition: 'The book is on the table.'", options:["Book","Is","On","Table"], answer:"On", difficulty:"easy"},
+      {q:"'I have finished my work.' Tense?", options:["Simple present","Present perfect","Past continuous","Future"], answer:"Present perfect", difficulty:"medium"},
+      {q:"What is an antonym of 'Generous'?", options:["Kind","Selfish","Helpful","Noble"], answer:"Selfish", difficulty:"medium"}
+    ],
+    "Social Studies": [
+      {q:"'Ganga of the South' refers to?", options:["Godavari","Kaveri","Krishna","Narmada"], answer:"Godavari", difficulty:"medium"},
+      {q:"Who built the Taj Mahal?", options:["Akbar","Shah Jahan","Aurangzeb","Humayun"], answer:"Shah Jahan", difficulty:"easy"},
+      {q:"India is on which continent?", options:["Africa","Asia","Europe","Australia"], answer:"Asia", difficulty:"easy"},
+      {q:"Type of government in India?", options:["Monarchy","Democracy","Dictatorship","Theocracy"], answer:"Democracy", difficulty:"easy"},
+      {q:"Mountain range separating India from China?", options:["Aravalli","Himalayas","Western Ghats","Vindhya"], answer:"Himalayas", difficulty:"easy"},
+      {q:"Who was the first Prime Minister of India?", options:["Gandhi","Nehru","Patel","Ambedkar"], answer:"Nehru", difficulty:"easy"},
+      {q:"When was the Constitution of India adopted?", options:["1947","1949","1950","1952"], answer:"1949", difficulty:"medium"},
+      {q:"Which is the longest river in India?", options:["Yamuna","Ganga","Godavari","Brahmaputra"], answer:"Ganga", difficulty:"easy"},
+      {q:"What does UNESCO stand for?", options:["United Nations Educational, Scientific and Cultural Organization","United Nations Economic and Social Council","None","Both"], answer:"United Nations Educational, Scientific and Cultural Organization", difficulty:"hard"},
+      {q:"Who wrote the National Anthem?", options:["Bankim Chandra","Rabindranath Tagore","Iqbal","Sarojini Naidu"], answer:"Rabindranath Tagore", difficulty:"easy"},
+      {q:"Which state is known as the 'Spice Garden of India'?", options:["Kerala","Karnataka","Tamil Nadu","Andhra"], answer:"Kerala", difficulty:"medium"},
+      {q:"The Tropic of Cancer passes through how many Indian states?", options:["6","7","8","9"], answer:"8", difficulty:"hard"},
+      {q:"Who is known as the Iron Man of India?", options:["Nehru","Patel","Bose","Gandhi"], answer:"Patel", difficulty:"easy"},
+      {q:"What is the full form of GDP?", options:["Gross Domestic Product","General Development Plan","Global Domestic Price","None"], answer:"Gross Domestic Product", difficulty:"medium"},
+      {q:"Which is the southernmost point of India?", options:["Kanyakumari","Indira Point","Rameswaram","None"], answer:"Indira Point", difficulty:"hard"}
+    ]
+  },
+  "Class 9-10": {
+    "Math": [
+      {q:"Value of sin(90°)?", options:["0","1","0.5","undefined"], answer:"1", difficulty:"easy"},
+      {q:"Solve: 2x + 4 = 12", options:["3","4","5","6"], answer:"4", difficulty:"easy"},
+      {q:"Area of circle formula?", options:["πr","πr²","2πr","πd"], answer:"πr²", difficulty:"easy"},
+      {q:"HCF of 12 and 18?", options:["2","3","6","9"], answer:"6", difficulty:"easy"},
+      {q:"√2 is a?", options:["Rational","Irrational","Whole","Natural"], answer:"Irrational", difficulty:"easy"},
+      {q:"What is cos(0°)?", options:["0","1","−1","0.5"], answer:"1", difficulty:"easy"},
+      {q:"Quadratic formula uses which discriminant?", options:["b²−4ac","b²+4ac","2b−4ac","None"], answer:"b²−4ac", difficulty:"medium"},
+      {q:"Distance formula in coordinate geometry?", options:["√((x2−x1)²+(y2−y1)²)","(x2−x1)+(y2−y1)","Both","None"], answer:"√((x2−x1)²+(y2−y1)²)", difficulty:"medium"},
+      {q:"What is the probability of getting a head in a fair coin?", options:["0","0.5","1","0.25"], answer:"0.5", difficulty:"easy"},
+      {q:"Sum of first n natural numbers?", options:["n(n+1)/2","n²","n(n−1)/2","2n"], answer:"n(n+1)/2", difficulty:"medium"},
+      {q:"Value of log₁₀(100)?", options:["1","2","10","100"], answer:"2", difficulty:"medium"},
+      {q:"What is the slope of a horizontal line?", options:["0","1","Undefined","Infinite"], answer:"0", difficulty:"medium"},
+      {q:"Volume of a sphere?", options:["4/3 πr³","4πr²","πr²h","2/3 πr³"], answer:"4/3 πr³", difficulty:"medium"},
+      {q:"If a=3, b=4, then √(a²+b²)=?", options:["5","7","12","25"], answer:"5", difficulty:"easy"},
+      {q:"What is the median of 3,5,7,9,11?", options:["5","7","9","6"], answer:"7", difficulty:"easy"}
+    ],
+    "Science": [
+      {q:"Atomic number of Hydrogen?", options:["0","1","2","3"], answer:"1", difficulty:"easy"},
+      {q:"Powerhouse of the cell?", options:["Nucleus","Ribosome","Mitochondria","Golgi"], answer:"Mitochondria", difficulty:"easy"},
+      {q:"SI unit of electric current?", options:["Volt","Watt","Ampere","Ohm"], answer:"Ampere", difficulty:"easy"},
+      {q:"Process plants use to make food?", options:["Respiration","Photosynthesis","Digestion","Excretion"], answer:"Photosynthesis", difficulty:"easy"},
+      {q:"Chemical formula of water?", options:["CO2","H2O","O2","NaCl"], answer:"H2O", difficulty:"easy"},
+      {q:"Which acid is present in lemon?", options:["Acetic","Citric","Lactic","Sulphuric"], answer:"Citric", difficulty:"easy"},
+      {q:"What is the valency of Oxygen?", options:["1","2","3","4"], answer:"2", difficulty:"easy"},
+      {q:"Newton's third law states?", options:["Inertia","F=ma","Action-Reaction","Gravity"], answer:"Action-Reaction", difficulty:"medium"},
+      {q:"Which mirror is used in headlights?", options:["Plane","Concave","Convex","None"], answer:"Concave", difficulty:"medium"},
+      {q:"pH of pure water is?", options:["0","7","14","1"], answer:"7", difficulty:"easy"},
+      {q:"Which blood group is universal donor?", options:["A","B","AB","O"], answer:"O", difficulty:"medium"},
+      {q:"Speed of sound in air is approximately?", options:["330 m/s","3×10⁸ m/s","1500 m/s","5 km/s"], answer:"330 m/s", difficulty:"medium"},
+      {q:"What is the chemical name of baking soda?", options:["NaCl","NaHCO3","Na2CO3","CaCO3"], answer:"NaHCO3", difficulty:"hard"},
+      {q:"Which organelle contains chlorophyll?", options:["Mitochondria","Chloroplast","Nucleus","Vacuole"], answer:"Chloroplast", difficulty:"easy"},
+      {q:"Ohm's law is?", options:["V=IR","P=VI","F=ma","E=mc²"], answer:"V=IR", difficulty:"easy"}
+    ],
+    "English": [
+      {q:"A poem that tells a story is a:", options:["Sonnet","Ballad","Haiku","Ode"], answer:"Ballad", difficulty:"medium"},
+      {q:"Figure of speech using 'like' or 'as'?", options:["Metaphor","Simile","Personification","Irony"], answer:"Simile", difficulty:"easy"},
+      {q:"Tense: 'She has finished her homework.'", options:["Simple past","Present perfect","Future","Present continuous"], answer:"Present perfect", difficulty:"medium"},
+      {q:"Synonym of 'Courageous'?", options:["Fearful","Brave","Weak","Nervous"], answer:"Brave", difficulty:"easy"},
+      {q:"Identify adjective: 'The tall boy ran fast.'", options:["Boy","Ran","Tall","Fast"], answer:"Tall", difficulty:"easy"},
+      {q:"What is a metaphor?", options:["Comparison using like/as","Direct comparison without like/as","Sound device","Rhyme"], answer:"Direct comparison without like/as", difficulty:"medium"},
+      {q:"First person narrative uses?", options:["He/She","I/We","You","They"], answer:"I/We", difficulty:"easy"},
+      {q:"Alliteration is?", options:["Repetition of vowel sounds","Repetition of consonant sounds","Rhyme","Irony"], answer:"Repetition of consonant sounds", difficulty:"medium"},
+      {q:"Irony means?", options:["Direct statement","Contrast between expectation and reality","A type of poem","Grammar rule"], answer:"Contrast between expectation and reality", difficulty:"medium"},
+      {q:"Passive of 'The chef cooks the meal.'", options:["The meal cooks the chef.","The meal is cooked by the chef.","The meal was cooking.","Cooking is done."], answer:"The meal is cooked by the chef.", difficulty:"medium"},
+      {q:"What is a haiku?", options:["14 line poem","Japanese 3-line poem","Epic","Sonnet"], answer:"Japanese 3-line poem", difficulty:"medium"},
+      {q:"Identify the figure: 'The wind whispered.'", options:["Simile","Metaphor","Personification","Hyperbole"], answer:"Personification", difficulty:"medium"},
+      {q:"What is the superlative of 'beautiful'?", options:["More beautiful","Most beautiful","Beautifuler","Beautifullest"], answer:"Most beautiful", difficulty:"easy"},
+      {q:"'Neither...nor' is an example of?", options:["Simple conjunction","Correlative conjunction","Preposition","Interjection"], answer:"Correlative conjunction", difficulty:"hard"},
+      {q:"What is an oxymoron?", options:["Exaggeration","Contradictory terms together","Understatement","Comparison"], answer:"Contradictory terms together", difficulty:"hard"}
+    ],
+    "Social Studies": [
+      {q:"Father of the Nation in India?", options:["Nehru","Gandhi","Bose","Patel"], answer:"Gandhi", difficulty:"easy"},
+      {q:"India gained independence in?", options:["1945","1947","1950","1952"], answer:"1947", difficulty:"easy"},
+      {q:"GDP stands for?", options:["Gross Domestic Product","General Development Plan","Global Domestic Price","None"], answer:"Gross Domestic Product", difficulty:"easy"},
+      {q:"Supreme law of India?", options:["The Constitution","Panchsheel","Preamble","Charter"], answer:"The Constitution", difficulty:"easy"},
+      {q:"Largest state by area?", options:["Maharashtra","Rajasthan","Madhya Pradesh","Uttar Pradesh"], answer:"Rajasthan", difficulty:"easy"},
+      {q:"Who was the first President of India?", options:["Rajendra Prasad","Radhakrishnan","Zakir Hussain","None"], answer:"Rajendra Prasad", difficulty:"easy"},
+      {q:"When did the Quit India Movement start?", options:["1930","1942","1947","1920"], answer:"1942", difficulty:"medium"},
+      {q:"Which article deals with Right to Equality?", options:["14","19","21","32"], answer:"14", difficulty:"hard"},
+      {q:"What is the lower house of Parliament called?", options:["Rajya Sabha","Lok Sabha","Vidhan Sabha","None"], answer:"Lok Sabha", difficulty:"easy"},
+      {q:"Who discovered the sea route to India?", options:["Columbus","Vasco da Gama","Magellan","Cook"], answer:"Vasco da Gama", difficulty:"medium"},
+      {q:"The Chipko movement was related to?", options:["Water","Forests","Animals","Air"], answer:"Forests", difficulty:"medium"},
+      {q:"What is the full form of UNO?", options:["United Nations Organization","United National Organization","None","Both"], answer:"United Nations Organization", difficulty:"easy"},
+      {q:"Which is the highest peak in India?", options:["Everest","K2","Kanchenjunga","Nanda Devi"], answer:"Kanchenjunga", difficulty:"medium"},
+      {q:"The Indian National Congress was founded in?", options:["1885","1905","1920","1942"], answer:"1885", difficulty:"medium"},
+      {q:"What does the term 'Secular' mean in Indian Constitution?", options:["No religion","Equal respect to all religions","One religion","None"], answer:"Equal respect to all religions", difficulty:"medium"}
+    ]
+  },
+  "Class 11-12": {
+    "Math": [
+      {q:"Derivative of x²?", options:["x","2x","x²","2x²"], answer:"2x", difficulty:"easy"},
+      {q:"Value of log(1)?", options:["0","1","10","undefined"], answer:"0", difficulty:"easy"},
+      {q:"Outcomes when tossing 2 coins?", options:["2","3","4","6"], answer:"4", difficulty:"easy"},
+      {q:"Identity matrix is used for?", options:["Addition","Multiplication identity","Subtraction","Division"], answer:"Multiplication identity", difficulty:"medium"},
+      {q:"Integral of constant c dx?", options:["c","cx","x","0"], answer:"cx", difficulty:"easy"},
+      {q:"What is lim x→0 (sin x)/x ?", options:["0","1","∞","Undefined"], answer:"1", difficulty:"medium"},
+      {q:"Derivative of sin x?", options:["cos x","−cos x","sin x","−sin x"], answer:"cos x", difficulty:"easy"},
+      {q:"What is the determinant of identity matrix of order 3?", options:["0","1","3","9"], answer:"1", difficulty:"medium"},
+      {q:"Integration of eˣ is?", options:["eˣ","eˣ + C","x eˣ","None"], answer:"eˣ + C", difficulty:"easy"},
+      {q:"What is the binomial expansion of (a+b)²?", options:["a²+b²","a²+2ab+b²","a²−2ab+b²","None"], answer:"a²+2ab+b²", difficulty:"easy"},
+      {q:"If A is a square matrix, A A⁻¹ = ?", options:["0","I","A","None"], answer:"I", difficulty:"medium"},
+      {q:"What is the domain of √(x−2)?", options:["x≥2","x>2","x≤2","All real"], answer:"x≥2", difficulty:"medium"},
+      {q:"d/dx (ln x) = ?", options:["1/x","x","ln x","eˣ"], answer:"1/x", difficulty:"easy"},
+      {q:"What is the probability of an impossible event?", options:["0","1","0.5","Undefined"], answer:"0", difficulty:"easy"},
+      {q:"Sum of infinite GP |r|<1 is?", options:["a/(1−r)","a/(1+r)","a r","None"], answer:"a/(1−r)", difficulty:"hard"}
+    ],
+    "Science": [
+      {q:"Law: Energy cannot be created or destroyed?", options:["Newton 1st","Conservation of Energy","Gravitation","Boyle"], answer:"Conservation of Energy", difficulty:"easy"},
+      {q:"Compounds mainly of C and H?", options:["Inorganic","Organic","Mineral","Metallic"], answer:"Organic", difficulty:"easy"},
+      {q:"Genetic information carrier?", options:["Protein","DNA","Lipid","Carbohydrate"], answer:"DNA", difficulty:"easy"},
+      {q:"Study of heat and energy transfer?", options:["Thermodynamics","Kinematics","Optics","Electrostatics"], answer:"Thermodynamics", difficulty:"easy"},
+      {q:"Particle with negative charge?", options:["Proton","Neutron","Electron","Photon"], answer:"Electron", difficulty:"easy"},
+      {q:"What is Avogadro's number approximately?", options:["6.022×10²³","6.022×10²²","3×10⁸","1.6×10⁻¹⁹"], answer:"6.022×10²³", difficulty:"medium"},
+      {q:"Which orbital has the highest energy in ground state of H?", options:["1s","2s","2p","3s"], answer:"1s", difficulty:"hard"},
+      {q:"Faraday's first law of electrolysis relates to?", options:["Mass and charge","Voltage and current","Resistance","None"], answer:"Mass and charge", difficulty:"medium"},
+      {q:"What is the SI unit of radioactivity?", options:["Becquerel","Curie","Rutherford","Gray"], answer:"Becquerel", difficulty:"medium"},
+      {q:"Which hormone regulates blood sugar?", options:["Thyroxine","Insulin","Adrenaline","Growth hormone"], answer:"Insulin", difficulty:"easy"},
+      {q:"What is the bond angle in methane?", options:["90°","109.5°","120°","180°"], answer:"109.5°", difficulty:"medium"},
+      {q:"Which scientist proposed the uncertainty principle?", options:["Einstein","Heisenberg","Bohr","Schrodinger"], answer:"Heisenberg", difficulty:"medium"},
+      {q:"What is the pH of a strong acid solution typically?", options:["Less than 7","Equal to 7","Greater than 7","14"], answer:"Less than 7", difficulty:"easy"},
+      {q:"Which process is used to separate crude oil?", options:["Filtration","Distillation","Evaporation","Crystallization"], answer:"Distillation", difficulty:"medium"},
+      {q:"What is the charge of a neutron?", options:["+1","−1","0","+2"], answer:"0", difficulty:"easy"}
+    ],
+    "English": [
+      {q:"What is a 'metaphor'?", options:["Direct comparison without like/as","Sound device","Type of rhyme","Question"], answer:"Direct comparison without like/as", difficulty:"easy"},
+      {q:"Story from 'I' perspective is?", options:["Third person","First person","Second person","Omniscient"], answer:"First person", difficulty:"easy"},
+      {q:"Literary device repeating consonant sound?", options:["Alliteration","Rhyme","Simile","Irony"], answer:"Alliteration", difficulty:"easy"},
+      {q:"Irony in literature is?", options:["Direct statement","Contrast between expectation and reality","Type of poem","Grammar rule"], answer:"Contrast between expectation and reality", difficulty:"medium"},
+      {q:"Passive: 'The chef cooks the meal.'", options:["The meal cooks the chef.","The meal is cooked by the chef.","The meal was cooking.","Cooking is done."], answer:"The meal is cooked by the chef.", difficulty:"medium"},
+      {q:"What is a soliloquy?", options:["Dialogue","Speech alone on stage","Song","Dance"], answer:"Speech alone on stage", difficulty:"medium"},
+      {q:"What is the climax of a story?", options:["Beginning","Turning point of highest tension","End","Introduction"], answer:"Turning point of highest tension", difficulty:"easy"},
+      {q:"What is hyperbole?", options:["Understatement","Exaggeration","Comparison","Irony"], answer:"Exaggeration", difficulty:"easy"},
+      {q:"What is a tragic flaw?", options:["Hero's weakness leading to downfall","Villain's strength","Comedy element","None"], answer:"Hero's weakness leading to downfall", difficulty:"medium"},
+      {q:"What is the rhyme scheme of a Shakespearean sonnet?", options:["ABAB CDCD EFEF GG","AABB","ABBA","None"], answer:"ABAB CDCD EFEF GG", difficulty:"hard"},
+      {q:"What is an epic?", options:["Short poem","Long narrative poem about heroic deeds","Novel","Play"], answer:"Long narrative poem about heroic deeds", difficulty:"medium"},
+      {q:"What is stream of consciousness?", options:["Logical narration","Flow of thoughts and feelings","Dialogue only","None"], answer:"Flow of thoughts and feelings", difficulty:"hard"},
+      {q:"What is a paradox?", options:["Contradiction that may be true","Simple statement","Question","Command"], answer:"Contradiction that may be true", difficulty:"medium"},
+      {q:"What is the antagonist?", options:["Main character","Opposing force/character","Narrator","Side character"], answer:"Opposing force/character", difficulty:"easy"},
+      {q:"What is catharsis?", options:["Emotional release","Climax","Conflict","Setting"], answer:"Emotional release", difficulty:"hard"}
+    ],
+    "Social Studies": [
+      {q:"Who wrote the Indian National Anthem?", options:["Bankim Chandra","Rabindranath Tagore","Sarojini Naidu","Iqbal"], answer:"Rabindranath Tagore", difficulty:"easy"},
+      {q:"Inflation means?", options:["Fall in prices","Rise in general price level","Increase in production","Decrease in demand"], answer:"Rise in general price level", difficulty:"easy"},
+      {q:"Which organ makes laws?", options:["Judiciary","Executive","Legislature","Election Commission"], answer:"Legislature", difficulty:"easy"},
+      {q:"Quit India Movement year?", options:["1930","1942","1947","1920"], answer:"1942", difficulty:"easy"},
+      {q:"Government by elected representatives?", options:["Monarchy","Democracy","Autocracy","Theocracy"], answer:"Democracy", difficulty:"easy"},
+      {q:"What is the full form of NITI Aayog?", options:["National Institution for Transforming India","National Integration","None","Both"], answer:"National Institution for Transforming India", difficulty:"medium"},
+      {q:"Which schedule of the Constitution deals with languages?", options:["6th","7th","8th","9th"], answer:"8th", difficulty:"hard"},
+      {q:"Who is the ex-officio Chairman of Rajya Sabha?", options:["President","Vice President","Prime Minister","Speaker"], answer:"Vice President", difficulty:"medium"},
+      {q:"What is the minimum age to become President of India?", options:["25","30","35","40"], answer:"35", difficulty:"easy"},
+      {q:"Which fundamental right was removed by 44th Amendment?", options:["Right to Equality","Right to Property","Right to Freedom","Right to Religion"], answer:"Right to Property", difficulty:"hard"},
+      {q:"What is the term of Lok Sabha?", options:["4 years","5 years","6 years","7 years"], answer:"5 years", difficulty:"easy"},
+      {q:"Who appoints the Chief Justice of India?", options:["Prime Minister","President","Parliament","Supreme Court"], answer:"President", difficulty:"medium"},
+      {q:"What is the full form of GST?", options:["Goods and Services Tax","General Sales Tax","None","Both"], answer:"Goods and Services Tax", difficulty:"easy"},
+      {q:"Which is the longest written constitution in the world?", options:["USA","India","UK","France"], answer:"India", difficulty:"easy"},
+      {q:"What is the Directive Principles of State Policy inspired by?", options:["USA","Ireland","UK","France"], answer:"Ireland", difficulty:"hard"}
+    ]
+  }
+};
+
+/* ---------- STATE DATA (expanded) ---------- */
+// Expand grouped curriculum into individual Class 1–12 entries.
+// The original question banks are preserved; each class points to its matching group.
+(function expandIndividualClasses(){
+  const groups = {
+    'Class 1-5':['Class 1','Class 2','Class 3','Class 4','Class 5'],
+    'Class 6-8':['Class 6','Class 7','Class 8'],
+    'Class 9-10':['Class 9','Class 10'],
+    'Class 11-12':['Class 11','Class 12']
+  };
+  const grouped = {};
+  Object.entries(groups).forEach(([group, classes]) => {
+    const data = CLASS_SUBJECT_DATA[group];
+    grouped[group] = data;
+    classes.forEach(c => { CLASS_SUBJECT_DATA[c] = data; });
+  });
+  Object.keys(grouped).forEach(g => delete CLASS_SUBJECT_DATA[g]);
+})();
+
+// Build chapter menus from each available subject question bank.
+function getChapterList(cls, subject) {
+  const qs = (CLASS_SUBJECT_DATA[cls] && CLASS_SUBJECT_DATA[cls][subject]) || [];
+  const size = Math.max(3, Math.ceil(qs.length / 5));
+  const chapters = [];
+  for (let i = 0; i < qs.length; i += size) {
+    const n = chapters.length + 1;
+    chapters.push({ name: `Chapter ${n}`, questions: qs.slice(i, i + size) });
+  }
+  return chapters.length ? chapters : [{name:'Chapter 1',questions:[]}];
+}
+
+const STATE_DATA = {
+  "Andhra Pradesh": [
+    {q:"Capital of Andhra Pradesh?", options:["Visakhapatnam","Amaravati","Hyderabad","Vijayawada"], answer:"Amaravati", hint:"New capital after bifurcation."},
+    {q:"Famous temple in Tirupati?", options:["Meenakshi","Venkateswara","Jagannath","Somnath"], answer:"Venkateswara"},
+    {q:"Official language?", options:["Tamil","Telugu","Kannada","Malayalam"], answer:"Telugu"},
+    {q:"Major river?", options:["Ganga","Godavari","Narmada","Yamuna"], answer:"Godavari"},
+    {q:"Which dance form is popular?", options:["Kuchipudi","Kathak","Bharatanatyam","Odissi"], answer:"Kuchipudi"},
+    {q:"Andhra was bifurcated in which year?", options:["2012","2014","2015","2010"], answer:"2014"}
+  ],
+  "Arunachal Pradesh": [
+    {q:"Capital of Arunachal Pradesh?", options:["Itanagar","Dispur","Imphal","Kohima"], answer:"Itanagar"},
+    {q:"Known as land of the?", options:["Rising Sun","Setting Sun","Midnight Sun","Northern Lights"], answer:"Rising Sun"},
+    {q:"Main river?", options:["Brahmaputra","Ganga","Yamuna","Kaveri"], answer:"Brahmaputra"},
+    {q:"Official language?", options:["Hindi","English","Assamese","Bengali"], answer:"English"},
+    {q:"Which country borders it to the north?", options:["Nepal","China","Bhutan","Myanmar"], answer:"China"},
+    {q:"Famous for which festival?", options:["Losar","Bihu","Hornbill","Onam"], answer:"Losar"}
+  ],
+  "Assam": [
+    {q:"Capital of Assam?", options:["Guwahati","Dispur","Shillong","Imphal"], answer:"Dispur"},
+    {q:"Famous festival?", options:["Bihu","Onam","Pongal","Durga Puja"], answer:"Bihu"},
+    {q:"River flowing through Assam?", options:["Ganga","Brahmaputra","Yamuna","Godavari"], answer:"Brahmaputra"},
+    {q:"Famous for producing?", options:["Tea","Coffee","Cotton","Sugarcane"], answer:"Tea"},
+    {q:"Kaziranga is famous for?", options:["Tigers","One-horned Rhinos","Elephants","Lions"], answer:"One-horned Rhinos"},
+    {q:"Official language?", options:["Assamese","Bengali","Hindi","English"], answer:"Assamese"}
+  ],
+  "Bihar": [
+    {q:"Capital of Bihar?", options:["Gaya","Patna","Muzaffarpur","Bhagalpur"], answer:"Patna"},
+    {q:"Nalanda University is in?", options:["UP","Bihar","MP","Odisha"], answer:"Bihar"},
+    {q:"Main language?", options:["Bhojpuri","Hindi","Maithili","All of these"], answer:"All of these"},
+    {q:"Who was born in Bihar and is Father of the Nation?", options:["Nehru","Gandhi","Ambedkar","Bose"], answer:"Gandhi"},
+    {q:"Famous for which sweet?", options:["Rasgulla","Khaja","Peda","None"], answer:"Khaja"},
+    {q:"Bodh Gaya is associated with?", options:["Mahavira","Buddha","Guru Nanak","None"], answer:"Buddha"}
+  ],
+  "Chhattisgarh": [
+    {q:"Capital of Chhattisgarh?", options:["Raipur","Bilaspur","Durg","Bhilai"], answer:"Raipur"},
+    {q:"Known for which mineral?", options:["Coal","Gold","Diamond","Iron"], answer:"Coal"},
+    {q:"Formed in which year?", options:["1998","2000","2001","1995"], answer:"2000"},
+    {q:"Official language?", options:["Hindi","Chhattisgarhi","Odia","Marathi"], answer:"Hindi"},
+    {q:"Famous waterfall?", options:["Chitrakote","Jog","Athirappilly","None"], answer:"Chitrakote"},
+    {q:"Which tribe is prominent?", options:["Gond","Bhil","Santhal","All"], answer:"Gond"}
+  ],
+  "Goa": [
+    {q:"Capital of Goa?", options:["Vasco","Panaji","Margao","Mapusa"], answer:"Panaji"},
+    {q:"Was a colony of?", options:["Britain","Portugal","France","Dutch"], answer:"Portugal"},
+    {q:"Official language?", options:["Hindi","Konkani","Marathi","English"], answer:"Konkani"},
+    {q:"Famous beach?", options:["Marina","Calangute","Juhu","None"], answer:"Calangute"},
+    {q:"Carnival is famous in?", options:["Goa","Kerala","Rajasthan","Punjab"], answer:"Goa"},
+    {q:"Basilica of Bom Jesus is in?", options:["Panaji","Old Goa","Margao","Vasco"], answer:"Old Goa"}
+  ],
+  "Gujarat": [
+    {q:"Capital of Gujarat?", options:["Ahmedabad","Surat","Gandhinagar","Vadodara"], answer:"Gandhinagar"},
+    {q:"Famous dance?", options:["Garba","Bhangra","Lavani","Bihu"], answer:"Garba"},
+    {q:"Birthplace of?", options:["Nehru","Gandhi & Patel","Bose","Ambedkar"], answer:"Gandhi & Patel"},
+    {q:"Official language?", options:["Gujarati","Marathi","Sindhi","Hindi"], answer:"Gujarati"},
+    {q:"Statue of Unity is in?", options:["Ahmedabad","Kevadia","Surat","Rajkot"], answer:"Kevadia"},
+    {q:"Rann of Kutch is famous for?", options:["Desert festival","Beaches","Hills","None"], answer:"Desert festival"}
+  ],
+  "Haryana": [
+    {q:"Capital of Haryana?", options:["Faridabad","Chandigarh","Gurugram","Hisar"], answer:"Chandigarh"},
+    {q:"Known for which sport?", options:["Cricket","Wrestling","Hockey","Kabaddi"], answer:"Wrestling"},
+    {q:"Official language?", options:["Hindi","Punjabi","Haryanvi","English"], answer:"Hindi"},
+    {q:"Kurukshetra is from which epic?", options:["Ramayana","Mahabharata","Both","None"], answer:"Mahabharata"},
+    {q:"Which city is known as Cyber City?", options:["Faridabad","Gurugram","Panipat","Hisar"], answer:"Gurugram"},
+    {q:"Famous for which battle?", options:["Panipat","Plassey","Buxar","None"], answer:"Panipat"}
+  ],
+  "Himachal Pradesh": [
+    {q:"Capital of Himachal Pradesh?", options:["Shimla","Manali","Dharamshala","Kullu"], answer:"Shimla"},
+    {q:"Known as land of?", options:["Gods","Snow","Rivers","All of these"], answer:"Gods"},
+    {q:"Famous hill station?", options:["Manali","Ooty","Darjeeling","Munnar"], answer:"Manali"},
+    {q:"Official language?", options:["Hindi","Pahari","Punjabi","English"], answer:"Hindi"},
+    {q:"Apple is grown widely in?", options:["Shimla & Kinnaur","Kangra","Both","None"], answer:"Shimla & Kinnaur"},
+    {q:"Dalai Lama lives in?", options:["Shimla","Dharamshala","Manali","Kullu"], answer:"Dharamshala"}
+  ],
+  "Jharkhand": [
+    {q:"Capital of Jharkhand?", options:["Jamshedpur","Ranchi","Dhanbad","Bokaro"], answer:"Ranchi"},
+    {q:"Rich in?", options:["Minerals","Oil","Tea","Cotton"], answer:"Minerals"},
+    {q:"Formed in?", options:["1998","2000","2001","1995"], answer:"2000"},
+    {q:"Main language?", options:["Hindi","Santhali","Bengali","All of these"], answer:"All of these"},
+    {q:"Tata Steel is in?", options:["Ranchi","Jamshedpur","Dhanbad","Bokaro"], answer:"Jamshedpur"},
+    {q:"Famous waterfall?", options:["Dassam","Jog","Athirappilly","None"], answer:"Dassam"}
+  ],
+  "Karnataka": [
+    {q:"Capital of Karnataka?", options:["Mysuru","Bengaluru","Hubli","Mangaluru"], answer:"Bengaluru"},
+    {q:"IT hub of India?", options:["Textiles","Information Technology","Fishing","Mining"], answer:"Information Technology"},
+    {q:"Official language?", options:["Telugu","Kannada","Tamil","Malayalam"], answer:"Kannada"},
+    {q:"Famous palace in Mysuru?", options:["Mysore Palace","Red Fort","City Palace","Amber Fort"], answer:"Mysore Palace"},
+    {q:"Hampi is a?", options:["UNESCO site","Beach","Hill station","None"], answer:"UNESCO site"},
+    {q:"Coffee is grown in?", options:["Coorg","Chikkamagaluru","Both","None"], answer:"Both"}
+  ],
+  "Kerala": [
+    {q:"Capital of Kerala?", options:["Kochi","Thiruvananthapuram","Kozhikode","Kottayam"], answer:"Thiruvananthapuram"},
+    {q:"Called God's Own?", options:["City","Country","Land","Island"], answer:"Land"},
+    {q:"Classical dance-drama?", options:["Kathakali","Odissi","Kuchipudi","Manipuri"], answer:"Kathakali"},
+    {q:"Official language?", options:["Tamil","Malayalam","Kannada","Telugu"], answer:"Malayalam"},
+    {q:"Backwaters are famous in?", options:["Alleppey","Munnar","Both","None"], answer:"Alleppey"},
+    {q:"Onam is the festival of?", options:["Kerala","Tamil Nadu","Karnataka","Andhra"], answer:"Kerala"}
+  ],
+  "Madhya Pradesh": [
+    {q:"Capital of Madhya Pradesh?", options:["Indore","Bhopal","Gwalior","Jabalpur"], answer:"Bhopal"},
+    {q:"Known as heart of?", options:["India","Asia","World","South"], answer:"India"},
+    {q:"Famous fort in Gwalior?", options:["Red Fort","Gwalior Fort","Agra Fort","Golconda"], answer:"Gwalior Fort"},
+    {q:"Official language?", options:["Hindi","Marathi","Gujarati","English"], answer:"Hindi"},
+    {q:"Khajuraho temples are in?", options:["MP","UP","Rajasthan","Gujarat"], answer:"MP"},
+    {q:"Sanchi Stupa is related to?", options:["Buddhism","Hinduism","Jainism","Sikhism"], answer:"Buddhism"}
+  ],
+  "Maharashtra": [
+    {q:"Capital of Maharashtra?", options:["Pune","Mumbai","Nagpur","Nashik"], answer:"Mumbai"},
+    {q:"Dance form associated?", options:["Kathak","Lavani","Bharatanatyam","Kathakali"], answer:"Lavani"},
+    {q:"Cave near Mumbai?", options:["Ajanta","Elephanta","Ellora","Badami"], answer:"Elephanta"},
+    {q:"Most spoken language?", options:["Gujarati","Marathi","Kannada","Telugu"], answer:"Marathi"},
+    {q:"Ajanta & Ellora are in?", options:["Aurangabad region","Pune","Nagpur","Nashik"], answer:"Aurangabad region"},
+    {q:"Gateway of India is in?", options:["Mumbai","Pune","Nagpur","None"], answer:"Mumbai"}
+  ],
+  "Manipur": [
+    {q:"Capital of Manipur?", options:["Imphal","Kohima","Aizawl","Agartala"], answer:"Imphal"},
+    {q:"Famous dance?", options:["Manipuri","Bharatanatyam","Kathak","Odissi"], answer:"Manipuri"},
+    {q:"Official language?", options:["Manipuri","Hindi","English","Bengali"], answer:"Manipuri"},
+    {q:"Loktak Lake is in?", options:["Assam","Manipur","Meghalaya","Nagaland"], answer:"Manipur"},
+    {q:"Known for which sport?", options:["Polo","Hockey","Football","None"], answer:"Polo"},
+    {q:"Shares border with?", options:["Myanmar","China","Bangladesh","Nepal"], answer:"Myanmar"}
+  ],
+  "Meghalaya": [
+    {q:"Capital of Meghalaya?", options:["Shillong","Imphal","Aizawl","Kohima"], answer:"Shillong"},
+    {q:"Means abode of?", options:["Clouds","Gods","Snow","Rivers"], answer:"Clouds"},
+    {q:"Official language?", options:["Khasi","English","Garo","All of these"], answer:"All of these"},
+    {q:"Cherrapunji famous for?", options:["Highest rainfall","Highest peak","Largest lake","Hottest place"], answer:"Highest rainfall"},
+    {q:"Living root bridges are in?", options:["Meghalaya","Assam","Manipur","None"], answer:"Meghalaya"},
+    {q:"Known as Scotland of the East?", options:["Shillong","Gangtok","Darjeeling","None"], answer:"Shillong"}
+  ],
+  "Mizoram": [
+    {q:"Capital of Mizoram?", options:["Aizawl","Imphal","Kohima","Agartala"], answer:"Aizawl"},
+    {q:"Official language?", options:["Mizo","Hindi","English","Bengali"], answer:"Mizo"},
+    {q:"Famous festival?", options:["Chapchar Kut","Bihu","Onam","Pongal"], answer:"Chapchar Kut"},
+    {q:"Shares border with?", options:["China","Myanmar","Nepal","Bhutan"], answer:"Myanmar"},
+    {q:"Highest literacy rate state?", options:["Kerala","Mizoram","Goa","Tripura"], answer:"Mizoram"},
+    {q:"Known for bamboo?", options:["Yes","No","Only cane","None"], answer:"Yes"}
+  ],
+  "Nagaland": [
+    {q:"Capital of Nagaland?", options:["Kohima","Imphal","Aizawl","Shillong"], answer:"Kohima"},
+    {q:"Famous festival?", options:["Hornbill","Bihu","Onam","Pongal"], answer:"Hornbill"},
+    {q:"Official language?", options:["English","Naga","Hindi","Assamese"], answer:"English"},
+    {q:"Known as land of?", options:["Festivals","Warriors","Clouds","Rivers"], answer:"Festivals"},
+    {q:"Shares border with?", options:["Myanmar","China","Bangladesh","Nepal"], answer:"Myanmar"},
+    {q:"World War II battle site?", options:["Kohima","Imphal","Both","None"], answer:"Kohima"}
+  ],
+  "Odisha": [
+    {q:"Capital of Odisha?", options:["Cuttack","Bhubaneswar","Puri","Rourkela"], answer:"Bhubaneswar"},
+    {q:"Famous temple in Puri?", options:["Jagannath","Meenakshi","Venkateswara","Somnath"], answer:"Jagannath"},
+    {q:"Classical dance?", options:["Odissi","Kathak","Bharatanatyam","Kathakali"], answer:"Odissi"},
+    {q:"Official language?", options:["Odia","Hindi","Bengali","Telugu"], answer:"Odia"},
+    {q:"Konark is famous for?", options:["Sun Temple","Beach","Fort","None"], answer:"Sun Temple"},
+    {q:"Chilika Lake is in?", options:["Odisha","West Bengal","Andhra","None"], answer:"Odisha"}
+  ],
+  "Punjab": [
+    {q:"Capital of Punjab?", options:["Amritsar","Chandigarh","Ludhiana","Jalandhar"], answer:"Chandigarh"},
+    {q:"Land of?", options:["Five Rivers","Seven Rivers","Three Rivers","One River"], answer:"Five Rivers"},
+    {q:"Official language?", options:["Hindi","Punjabi","Urdu","English"], answer:"Punjabi"},
+    {q:"Golden Temple is in?", options:["Chandigarh","Amritsar","Ludhiana","Patiala"], answer:"Amritsar"},
+    {q:"Famous dance?", options:["Bhangra","Garba","Lavani","Bihu"], answer:"Bhangra"},
+    {q:"Known as granary of India?", options:["Punjab","Haryana","Both","None"], answer:"Punjab"}
+  ],
+  "Rajasthan": [
+    {q:"Capital of Rajasthan?", options:["Udaipur","Jodhpur","Jaipur","Ajmer"], answer:"Jaipur"},
+    {q:"Famous for?", options:["Rainforest","Desert (Thar)","Delta","Glacier"], answer:"Desert (Thar)"},
+    {q:"Jaipur is known as?", options:["Pink City","Blue City","Golden City","White City"], answer:"Pink City"},
+    {q:"Main language?", options:["Rajasthani/Hindi","Punjabi","Gujarati","Marathi"], answer:"Rajasthani/Hindi"},
+    {q:"Jaisalmer is known as?", options:["Golden City","Blue City","Pink City","White City"], answer:"Golden City"},
+    {q:"Pushkar is famous for?", options:["Camel fair","Temple","Both","None"], answer:"Both"}
+  ],
+  "Sikkim": [
+    {q:"Capital of Sikkim?", options:["Gangtok","Darjeeling","Kalimpong","Namchi"], answer:"Gangtok"},
+    {q:"Smallest state by?", options:["Area","Population","Both","None"], answer:"Area"},
+    {q:"Official language?", options:["Nepali","English","Hindi","All of these"], answer:"All of these"},
+    {q:"Kanchenjunga is in?", options:["Sikkim","Himachal","Uttarakhand","Arunachal"], answer:"Sikkim"},
+    {q:"Became part of India in?", options:["1975","1947","1950","1962"], answer:"1975"},
+    {q:"Known for organic farming?", options:["Yes","No","Only tea","None"], answer:"Yes"}
+  ],
+  "Tamil Nadu": [
+    {q:"Capital of Tamil Nadu?", options:["Madurai","Coimbatore","Chennai","Salem"], answer:"Chennai"},
+    {q:"Classical dance?", options:["Kathak","Odissi","Bharatanatyam","Manipuri"], answer:"Bharatanatyam"},
+    {q:"Official language?", options:["Telugu","Tamil","Kannada","Malayalam"], answer:"Tamil"},
+    {q:"Meenakshi Temple is in?", options:["Chennai","Madurai","Thanjavur","Trichy"], answer:"Madurai"},
+    {q:"Marina Beach is in?", options:["Chennai","Madurai","Coimbatore","None"], answer:"Chennai"},
+    {q:"Pongal is the festival of?", options:["Tamil Nadu","Kerala","Karnataka","Andhra"], answer:"Tamil Nadu"}
+  ],
+  "Telangana": [
+    {q:"Capital of Telangana?", options:["Warangal","Hyderabad","Karimnagar","Nizamabad"], answer:"Hyderabad"},
+    {q:"Formed in?", options:["2012","2014","2015","2010"], answer:"2014"},
+    {q:"Official language?", options:["Telugu","Hindi","Urdu","English"], answer:"Telugu"},
+    {q:"Charminar is in?", options:["Hyderabad","Warangal","Secunderabad","Karimnagar"], answer:"Hyderabad"},
+    {q:"Famous for which festival?", options:["Bathukamma","Onam","Bihu","Pongal"], answer:"Bathukamma"},
+    {q:"Golconda Fort is in?", options:["Hyderabad","Warangal","None","Both"], answer:"Hyderabad"}
+  ],
+  "Tripura": [
+    {q:"Capital of Tripura?", options:["Agartala","Imphal","Aizawl","Kohima"], answer:"Agartala"},
+    {q:"Official language?", options:["Bengali","Kokborok","English","All of these"], answer:"All of these"},
+    {q:"Shares border with?", options:["China","Bangladesh","Myanmar","Nepal"], answer:"Bangladesh"},
+    {q:"Ujjayanta Palace is in?", options:["Agartala","Imphal","Aizawl","Shillong"], answer:"Agartala"},
+    {q:"Famous for bamboo & cane?", options:["Yes","No","Only rubber","None"], answer:"Yes"},
+    {q:"Neermahal is a?", options:["Palace in water","Fort","Temple","None"], answer:"Palace in water"}
+  ],
+  "Uttar Pradesh": [
+    {q:"Capital of Uttar Pradesh?", options:["Kanpur","Agra","Lucknow","Varanasi"], answer:"Lucknow"},
+    {q:"Taj Mahal is in?", options:["Agra","Lucknow","Meerut","Allahabad"], answer:"Agra"},
+    {q:"River through Varanasi?", options:["Yamuna","Ganga","Godavari","Narmada"], answer:"Ganga"},
+    {q:"Main language?", options:["Bhojpuri","Hindi","Punjabi","Marathi"], answer:"Hindi"},
+    {q:"Kumbh Mela is held in?", options:["Prayagraj","Haridwar","Both","None"], answer:"Both"},
+    {q:"Most populous state?", options:["Maharashtra","UP","Bihar","West Bengal"], answer:"UP"}
+  ],
+  "Uttarakhand": [
+    {q:"Capital of Uttarakhand?", options:["Dehradun","Nainital","Haridwar","Rishikesh"], answer:"Dehradun"},
+    {q:"Known as land of?", options:["Gods","Snow","Rivers","All of these"], answer:"Gods"},
+    {q:"Famous temple?", options:["Kedarnath","Badrinath","Both","None"], answer:"Both"},
+    {q:"Official language?", options:["Hindi","Garhwali","Kumaoni","All of these"], answer:"Hindi"},
+    {q:"Jim Corbett National Park is in?", options:["Uttarakhand","UP","HP","None"], answer:"Uttarakhand"},
+    {q:"Source of Ganga is?", options:["Gangotri","Yamunotri","Both","None"], answer:"Gangotri"}
+  ],
+  "West Bengal": [
+    {q:"Capital of West Bengal?", options:["Howrah","Kolkata","Darjeeling","Siliguri"], answer:"Kolkata"},
+    {q:"Famous festival?", options:["Onam","Durga Puja","Pongal","Bihu"], answer:"Durga Puja"},
+    {q:"River through Kolkata?", options:["Ganga (Hooghly)","Yamuna","Godavari","Kaveri"], answer:"Ganga (Hooghly)"},
+    {q:"Main language?", options:["Bengali","Odia","Assamese","Hindi"], answer:"Bengali"},
+    {q:"Sundarbans is famous for?", options:["Royal Bengal Tiger","Beaches","Hills","None"], answer:"Royal Bengal Tiger"},
+    {q:"Howrah Bridge is in?", options:["Kolkata","Howrah","Both sides","None"], answer:"Both sides"}
+  ],
+  "Andaman & Nicobar": [
+    {q:"Capital?", options:["Port Blair","Kavaratti","Puducherry","Daman"], answer:"Port Blair"},
+    {q:"Famous jail?", options:["Cellular Jail","Tihar","Alipore","Yerwada"], answer:"Cellular Jail"},
+    {q:"Located in?", options:["Arabian Sea","Bay of Bengal","Indian Ocean","All"], answer:"Bay of Bengal"},
+    {q:"Official language?", options:["Hindi","English","Bengali","All of these"], answer:"Hindi"},
+    {q:"Ross Island is near?", options:["Port Blair","Kavaratti","None","Both"], answer:"Port Blair"},
+    {q:"Known for?", options:["Beaches & Coral","Deserts","Mountains","None"], answer:"Beaches & Coral"}
+  ],
+  "Chandigarh": [
+    {q:"Capital of which states?", options:["Punjab & Haryana","Only Punjab","Only Haryana","HP"], answer:"Punjab & Haryana"},
+    {q:"Designed by?", options:["Le Corbusier","Lutyens","Correa","None"], answer:"Le Corbusier"},
+    {q:"Known as city of?", options:["Beauty","Gardens","Lakes","All"], answer:"Beauty"},
+    {q:"Official language?", options:["Hindi","Punjabi","English","All"], answer:"All"},
+    {q:"Rock Garden is in?", options:["Chandigarh","Delhi","Jaipur","None"], answer:"Chandigarh"},
+    {q:"Sukhna Lake is in?", options:["Chandigarh","Shimla","Manali","None"], answer:"Chandigarh"}
+  ],
+  "Dadra Nagar Haveli": [
+    {q:"Capital?", options:["Daman","Silvassa","Diu","None"], answer:"Daman"},
+    {q:"Formed by merging?", options:["Daman Diu & Dadra Nagar Haveli","Goa & Daman","None","Both"], answer:"Daman Diu & Dadra Nagar Haveli"},
+    {q:"Official language?", options:["Gujarati","Hindi","English","All"], answer:"All"},
+    {q:"Daman was colony of?", options:["Portugal","Britain","France","Dutch"], answer:"Portugal"},
+    {q:"Known for?", options:["Tribal culture","Beaches","Both","None"], answer:"Both"},
+    {q:"Located near?", options:["Gujarat","Maharashtra","Both","None"], answer:"Both"}
+  ],
+  "Delhi": [
+    {q:"Capital of India?", options:["Mumbai","New Delhi","Kolkata","Chennai"], answer:"New Delhi"},
+    {q:"Red Fort is in?", options:["Delhi","Agra","Jaipur","Lucknow"], answer:"Delhi"},
+    {q:"Official language?", options:["Hindi","English","Punjabi","All"], answer:"Hindi"},
+    {q:"India Gate is in?", options:["Delhi","Mumbai","Kolkata","Chennai"], answer:"Delhi"},
+    {q:"Qutub Minar is in?", options:["Delhi","Agra","Jaipur","None"], answer:"Delhi"},
+    {q:"Lotus Temple is famous for?", options:["Bahai faith","Hindu","Sikh","None"], answer:"Bahai faith"}
+  ],
+  "Jammu & Kashmir": [
+    {q:"Summer capital?", options:["Jammu","Srinagar","Leh","None"], answer:"Srinagar"},
+    {q:"Dal Lake is in?", options:["Srinagar","Jammu","Leh","None"], answer:"Srinagar"},
+    {q:"Official language?", options:["Urdu","Kashmiri","Hindi","All"], answer:"All"},
+    {q:"Known for?", options:["Apples","Saffron","Both","None"], answer:"Both"},
+    {q:"Vaishno Devi is in?", options:["Jammu","Srinagar","Leh","None"], answer:"Jammu"},
+    {q:"Gulmarg is famous for?", options:["Skiing","Beaches","Deserts","None"], answer:"Skiing"}
+  ],
+  "Ladakh": [
+    {q:"Capital of Ladakh?", options:["Leh","Kargil","Srinagar","Jammu"], answer:"Leh"},
+    {q:"Known as land of?", options:["High Passes","Snow","Both","None"], answer:"High Passes"},
+    {q:"Pangong Lake is in?", options:["Ladakh","J&K","Himachal","None"], answer:"Ladakh"},
+    {q:"Official language?", options:["Ladakhi","Hindi","English","All"], answer:"All"},
+    {q:"Magnetic Hill is in?", options:["Ladakh","HP","Uttarakhand","None"], answer:"Ladakh"},
+    {q:"Known for monasteries?", options:["Yes","No","Only temples","None"], answer:"Yes"}
+  ],
+  "Lakshadweep": [
+    {q:"Capital?", options:["Kavaratti","Port Blair","Minicoy","Agatti"], answer:"Kavaratti"},
+    {q:"Group of?", options:["Islands","Hills","Deserts","None"], answer:"Islands"},
+    {q:"Official language?", options:["Malayalam","Hindi","English","All"], answer:"Malayalam"},
+    {q:"Located in?", options:["Arabian Sea","Bay of Bengal","Indian Ocean","All"], answer:"Arabian Sea"},
+    {q:"Known for coral reefs?", options:["Yes","No","Only beaches","None"], answer:"Yes"},
+    {q:"Smallest UT by area?", options:["Yes","No","Delhi is smaller","None"], answer:"Yes"}
+  ],
+  "Puducherry": [
+    {q:"Capital?", options:["Puducherry","Karaikal","Mahe","Yanam"], answer:"Puducherry"},
+    {q:"Was colony of?", options:["France","Portugal","Britain","Dutch"], answer:"France"},
+    {q:"Official language?", options:["Tamil","French","English","All"], answer:"All"},
+    {q:"Auroville is near?", options:["Puducherry","Chennai","Madurai","None"], answer:"Puducherry"},
+    {q:"Known for French architecture?", options:["Yes","No","Only British","None"], answer:"Yes"},
+    {q:"Four regions?", options:["Yes","No","Only two","None"], answer:"Yes"}
+  ]
+};
+
+/* ---------- Massive GK Data ---------- */
+const GK_DATA = [
+  {q:"Capital of France?", options:["Berlin","Madrid","Paris","Rome"], answer:"Paris", difficulty:"easy"},
+  {q:"Red Planet?", options:["Venus","Mars","Jupiter","Saturn"], answer:"Mars", difficulty:"easy"},
+  {q:"Painted Mona Lisa?", options:["Van Gogh","Picasso","Leonardo da Vinci","Michelangelo"], answer:"Leonardo da Vinci", difficulty:"easy"},
+  {q:"Largest ocean?", options:["Atlantic","Indian","Arctic","Pacific"], answer:"Pacific", difficulty:"easy"},
+  {q:"Most of Earth's atmosphere?", options:["Oxygen","Nitrogen","CO2","Hydrogen"], answer:"Nitrogen", difficulty:"easy"},
+  {q:"Father of modern physics?", options:["Newton","Einstein","Galileo","Darwin"], answer:"Einstein", difficulty:"medium"},
+  {q:"Longest river?", options:["Amazon","Nile","Yangtze","Mississippi"], answer:"Nile", difficulty:"medium"},
+  {q:"Number of continents?", options:["5","6","7","8"], answer:"7", difficulty:"easy"},
+  {q:"Land of the Rising Sun?", options:["China","Japan","Thailand","South Korea"], answer:"Japan", difficulty:"easy"},
+  {q:"Smallest prime number?", options:["0","1","2","3"], answer:"2", difficulty:"easy"},
+  {q:"Organ that pumps blood?", options:["Lungs","Brain","Heart","Kidney"], answer:"Heart", difficulty:"easy"},
+  {q:"Tallest mountain?", options:["K2","Kangchenjunga","Everest","Nanga Parbat"], answer:"Everest", difficulty:"easy"},
+  {q:"Wrote Romeo and Juliet?", options:["Dickens","Shakespeare","Twain","Austen"], answer:"Shakespeare", difficulty:"easy"},
+  {q:"Currency of Japan?", options:["Won","Yuan","Yen","Ringgit"], answer:"Yen", difficulty:"easy"},
+  {q:"Asthma affects?", options:["Heart","Lungs","Kidney","Liver"], answer:"Lungs", difficulty:"easy"},
+  {q:"Who invented the telephone?", options:["Edison","Bell","Tesla","Marconi"], answer:"Bell", difficulty:"easy"},
+  {q:"Largest planet in solar system?", options:["Earth","Saturn","Jupiter","Neptune"], answer:"Jupiter", difficulty:"easy"},
+  {q:"Chemical symbol of Gold?", options:["Go","Gd","Au","Ag"], answer:"Au", difficulty:"medium"},
+  {q:"How many bones in adult human body?", options:["206","210","198","300"], answer:"206", difficulty:"medium"},
+  {q:"Who discovered penicillin?", options:["Fleming","Pasteur","Koch","Jenner"], answer:"Fleming", difficulty:"medium"},
+  {q:"What is the boiling point of water in Fahrenheit?", options:["100","212","32","0"], answer:"212", difficulty:"medium"},
+  {q:"Which country is known as the Land of Thousand Lakes?", options:["Sweden","Finland","Norway","Canada"], answer:"Finland", difficulty:"hard"},
+  {q:"Who wrote 'The Origin of Species'?", options:["Darwin","Mendel","Watson","Lamarck"], answer:"Darwin", difficulty:"medium"},
+  {q:"What is the hardest natural substance?", options:["Gold","Iron","Diamond","Platinum"], answer:"Diamond", difficulty:"easy"},
+  {q:"Which gas do plants absorb?", options:["Oxygen","Nitrogen","Carbon dioxide","Hydrogen"], answer:"Carbon dioxide", difficulty:"easy"},
+  {q:"Who was the first man on the Moon?", options:["Aldrin","Armstrong","Gagarin","Collins"], answer:"Armstrong", difficulty:"easy"},
+  {q:"What is the capital of Australia?", options:["Sydney","Melbourne","Canberra","Perth"], answer:"Canberra", difficulty:"medium"},
+  {q:"Which is the smallest country in the world?", options:["Monaco","Vatican City","San Marino","Liechtenstein"], answer:"Vatican City", difficulty:"medium"},
+  {q:"What does DNA stand for?", options:["Deoxyribonucleic Acid","Dinucleic Acid","None","Both"], answer:"Deoxyribonucleic Acid", difficulty:"medium"},
+  {q:"Who painted the ceiling of the Sistine Chapel?", options:["Da Vinci","Michelangelo","Raphael","Donatello"], answer:"Michelangelo", difficulty:"medium"},
+  {q:"What is the speed of light?", options:["3×10⁸ m/s","3×10⁶ m/s","3×10⁵ km/s","Both A and C"], answer:"Both A and C", difficulty:"hard"},
+  {q:"Which element has the atomic number 1?", options:["Helium","Hydrogen","Lithium","Carbon"], answer:"Hydrogen", difficulty:"easy"},
+  {q:"What is the largest desert in the world?", options:["Sahara","Antarctic","Gobi","Arabian"], answer:"Antarctic", difficulty:"hard"},
+  {q:"Who is known as the Father of Computers?", options:["Turing","Babbage","Jobs","Gates"], answer:"Babbage", difficulty:"medium"},
+  {q:"What is the currency of the United Kingdom?", options:["Euro","Dollar","Pound Sterling","Franc"], answer:"Pound Sterling", difficulty:"easy"},
+  {q:"Which planet has the most moons?", options:["Jupiter","Saturn","Uranus","Neptune"], answer:"Saturn", difficulty:"hard"},
+  {q:"What is the main language of Brazil?", options:["Spanish","Portuguese","English","French"], answer:"Portuguese", difficulty:"medium"},
+  {q:"Who wrote 'Harry Potter'?", options:["Tolkien","Rowling","Lewis","Martin"], answer:"Rowling", difficulty:"easy"},
+  {q:"What is the chemical formula of table salt?", options:["NaCl","KCl","NaOH","HCl"], answer:"NaCl", difficulty:"easy"},
+  {q:"Which is the longest bone in human body?", options:["Tibia","Femur","Humerus","Fibula"], answer:"Femur", difficulty:"medium"},
+  {q:"What year did World War II end?", options:["1944","1945","1946","1943"], answer:"1945", difficulty:"medium"},
+  {q:"Who invented the World Wide Web?", options:["Gates","Berners-Lee","Jobs","Torvalds"], answer:"Berners-Lee", difficulty:"medium"},
+  {q:"What is the capital of Canada?", options:["Toronto","Vancouver","Ottawa","Montreal"], answer:"Ottawa", difficulty:"medium"},
+  {q:"Which blood cells help in clotting?", options:["RBC","WBC","Platelets","Plasma"], answer:"Platelets", difficulty:"medium"},
+  {q:"What is the national sport of India (unofficially often considered)?", options:["Cricket","Hockey","Kabaddi","Football"], answer:"Hockey", difficulty:"medium"},
+  {q:"Who composed the Indian National Song 'Vande Mataram'?", options:["Tagore","Bankim Chandra","Iqbal","None"], answer:"Bankim Chandra", difficulty:"medium"},
+  {q:"What is the full form of ISRO?", options:["Indian Space Research Organisation","International Space Research Organisation","None","Both"], answer:"Indian Space Research Organisation", difficulty:"easy"},
+  {q:"Which Indian city is known as the Silicon Valley of India?", options:["Hyderabad","Bengaluru","Pune","Chennai"], answer:"Bengaluru", difficulty:"easy"},
+  {q:"Who was the first Indian to go to space?", options:["Rakesh Sharma","Kalpana Chawla","Sunita Williams","None"], answer:"Rakesh Sharma", difficulty:"medium"},
+  {q:"What is the currency of China?", options:["Yen","Won","Yuan","Ringgit"], answer:"Yuan", difficulty:"easy"}
+];
+
+/* ---------- True/False Data ---------- */
+const TF_DATA = [
+  {q:"The Sun rises in the East.", answer: true},
+  {q:"Water boils at 50°C at sea level.", answer: false},
+  {q:"India has 28 states.", answer: true},
+  {q:"The Pacific is the smallest ocean.", answer: false},
+  {q:"Humans have 5 senses.", answer: true},
+  {q:"The capital of France is London.", answer: false},
+  {q:"Photosynthesis produces oxygen.", answer: true},
+  {q:"Mount Everest is in India.", answer: false},
+  {q:"A triangle has 3 sides.", answer: true},
+  {q:"The chemical formula of water is H2O.", answer: true},
+  {q:"Shakespeare wrote Romeo and Juliet.", answer: true},
+  {q:"The Moon is a planet.", answer: false},
+  {q:"Democracy means rule by the people.", answer: true},
+  {q:"The Earth is flat.", answer: false},
+  {q:"Mahatma Gandhi is the Father of the Nation.", answer: true},
+  {q:"Jupiter is the smallest planet.", answer: false},
+  {q:"DNA carries genetic information.", answer: true},
+  {q:"The Taj Mahal is in Delhi.", answer: false},
+  {q:"Oxygen is needed for breathing.", answer: true},
+  {q:"There are 8 continents.", answer: false}
+];
+
+/* ---------- App State ---------- */
+let selectedClass = null;
+let currentDifficulty = 'all';
+let quizState = {
+  questions: [], idx: 0, score: 0, tag: '', answered: false,
+  timer: null, timerOverride: null, maskUsed: false, skipUsed: false, hintUsed: false,
+  streak: 0, maxStreak: 0, mode: 'mcq', startTime: 0, times: [], review: []
+};
+let sessionStats = { totalScore: 0, totalQuestions: 0, quizzesPlayed: 0, lastQuiz: null };
+
+/* ---------- Init ---------- */
+function initProfileForm() {
+  const classSel = document.getElementById('profClass');
+  const stateSel = document.getElementById('profState');
+  if (!classSel || !stateSel) return;
+  const classList = Array.from({length:12}, (_,i)=>`Class ${i+1}`);
+  classSel.innerHTML = classList.map(c => `<option value="${c}">${c}</option>`).join('');
+  const stateList = Object.keys(STATE_DATA);
+  stateSel.innerHTML = stateList.map(st => `<option value="${st}">${st}</option>`).join('');
+  const updatePreview = () => {
+    const cp=document.getElementById('profileClassPreview');
+    const sp=document.getElementById('profileStatePreview');
+    if(cp) cp.textContent=classSel.value || 'Not selected';
+    if(sp) sp.textContent=stateSel.value || 'Not selected';
+  };
+  classSel.onchange=updatePreview;
+  stateSel.onchange=updatePreview;
+  updatePreview();
+}
+function saveProfile() {
+  profile.name = document.getElementById('profName').value.trim() || 'Learner';
+  profile.cls = document.getElementById('profClass').value || Object.keys(CLASS_SUBJECT_DATA)[0];
+  profile.state = document.getElementById('profState').value || Object.keys(STATE_DATA)[0];
+  saveProfileData();
+  renderProfileBadge();
+  renderXPBar();
+  checkDailyBanner();
+  goTo('homeScreen');
+  playClick();
+}
+function editProfile() {
+  document.getElementById('profName').value = profile.name === 'Learner' ? '' : profile.name;
+  const cls = document.getElementById('profClass');
+  const state = document.getElementById('profState');
+  cls.value = profile.cls && [...cls.options].some(o => o.value === profile.cls) ? profile.cls : cls.options[0]?.value || '';
+  state.value = profile.state && [...state.options].some(o => o.value === profile.state) ? profile.state : state.options[0]?.value || '';
+  const cp=document.getElementById('profileClassPreview');
+  const sp=document.getElementById('profileStatePreview');
+  if(cp) cp.textContent=cls.value || 'Not selected';
+  if(sp) sp.textContent=state.value || 'Not selected';
+  goTo('profileScreen');
+}
+function renderProfileBadge() {
+  const initial = (profile.name || 'L').charAt(0).toUpperCase();
+  const action = document.getElementById('profileActionBtn');
+  if (action) action.textContent = profile.name ? '👤 Edit Profile' : '👤 Create Profile';
+  document.getElementById('profileBadge').innerHTML = `
+    <div class="profile-avatar">${initial}<div class="level-dot">${profile.level}</div></div>
+    <div>
+      <div class="who">👋 ${profile.name}</div>
+      <div class="meta">${profile.cls} · ${profile.state}</div>
+    </div>
+    <button class="editlink" onclick="editProfile()">Edit</button>`;
+}
+function openClassMode() {
+  buildClassGrid();
+  goTo('classPickScreen');
+}
+function setDifficulty(d) {
+  currentDifficulty = d;
+  document.querySelectorAll('.diff-pill').forEach(p => p.classList.toggle('active', p.dataset.diff === d));
+  buildSubjectGrid();
+}
+
+/* ---------- Navigation ---------- */
+function goTo(id) {
+  const screens = document.querySelectorAll('.screen');
+  screens.forEach(s => {
+    s.classList.remove('active');
+    const oldBack = s.querySelector(':scope > .auto-back');
+    if (oldBack) oldBack.remove();
+  });
+  const el = document.getElementById(id);
+  if (!el) return false;
+  el.classList.add('active');
+  const backMap = {
+    classPickScreen:'homeScreen', subjectPickScreen:'classPickScreen', chapterPickScreen:'subjectPickScreen',
+    statePickScreen:'homeScreen', quizScreen:'homeScreen', resultScreen:'homeScreen',
+    achievementsScreen:'homeScreen', leaderboardScreen:'homeScreen', settingsScreen:'homeScreen', profileScreen:'homeScreen'
+  };
+  if (id !== 'homeScreen' && !el.querySelector(':scope > .backbtn')) {
+    const back = document.createElement('button');
+    back.className = 'backbtn auto-back'; back.type = 'button'; back.textContent = '← Back';
+    back.onclick = () => { if (typeof clearTimer==='function') clearTimer(); if(typeof clearSpeedTimer==='function') clearSpeedTimer(); goTo(backMap[id] || 'homeScreen'); };
+    el.insertBefore(back, el.firstChild);
+  }
+  if (id === 'achievementsScreen') renderAchievements();
+  if (id === 'leaderboardScreen') renderLeaderboard();
+  if (id === 'homeScreen') { renderProfileBadge(); renderXPBar(); renderScoreboard(); checkDailyBanner(); }
+  playClick();
+  return true;
+}
+
+function buildClassGrid() {
+  const grid = document.getElementById('classGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  Object.keys(CLASS_SUBJECT_DATA).forEach(cls => {
+    const b = document.createElement('button'); b.className = 'choice'; b.textContent = cls;
+    b.onclick = () => { selectedClass = cls; buildSubjectGrid(); goTo('subjectPickScreen'); };
+    grid.appendChild(b);
+  });
+}
+function buildSubjectGrid() {
+  if (!selectedClass || !CLASS_SUBJECT_DATA[selectedClass]) return;
+  document.getElementById('subjectSubLabel').textContent = `${selectedClass} — choose a subject`;
+  const grid = document.getElementById('subjectGrid'); grid.innerHTML = '';
+  Object.keys(CLASS_SUBJECT_DATA[selectedClass]).forEach(subj => {
+    const b = document.createElement('button'); b.className = 'choice'; b.textContent = subj;
+    b.onclick = () => { buildChapterGrid(subj); goTo('chapterPickScreen'); };
+    grid.appendChild(b);
+  });
+}
+function buildChapterGrid(subject) {
+  window.selectedSubject = subject;
+  const label = document.getElementById('chapterSubLabel');
+  if (label) label.textContent = `${selectedClass} · ${subject} — choose a chapter`;
+  const grid = document.getElementById('chapterGrid'); if (!grid) return; grid.innerHTML = '';
+  getChapterList(selectedClass, subject).forEach(ch => {
+    const b = document.createElement('button'); b.className = 'choice'; b.textContent = ch.name;
+    b.onclick = () => {
+      let qs = ch.questions.slice();
+      if (currentDifficulty !== 'all') { const f=qs.filter(q=>q.difficulty===currentDifficulty); if(f.length) qs=f; }
+      startQuiz(qs, `${selectedClass} · ${subject} · ${ch.name}`, 'mcq');
+    };
+    grid.appendChild(b);
+  });
+}
+function buildStateGrid(filter = '') {
+  const grid = document.getElementById('stateGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  const keys = Object.keys(STATE_DATA).filter(s => s.toLowerCase().includes(filter.toLowerCase()));
+  keys.forEach(state => {
+    const b = document.createElement('button');
+    b.className = 'choice';
+    b.textContent = state;
+    b.onclick = () => {
+      if (!profile.statesPlayed) profile.statesPlayed = [];
+      if (!profile.statesPlayed.includes(state)) profile.statesPlayed.push(state);
+      saveProfileData();
+      startQuiz(STATE_DATA[state], `${state} GK`, 'mcq');
+    };
+    grid.appendChild(b);
+  });
+}
+function filterStates() {
+  buildStateGrid(document.getElementById('stateSearch').value);
+}
+
+/* ---------- Quiz Engine ---------- */
+function fisherYates(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function startQuiz(questions, tag, mode = 'mcq', timerOverride = null) {
+  if (!questions || !questions.length) { showToast('No questions available'); return; }
+  let qs = fisherYates(questions);
+  const count = Math.min(settings.qCount, qs.length);
+  qs = qs.slice(0, count);
+  quizState = {
+    questions: qs, idx: 0, score: 0, tag, answered: false,
+    timer: null, timerOverride: timerOverride, maskUsed: false, skipUsed: false, hintUsed: false,
+    streak: 0, maxStreak: 0, mode, startTime: Date.now(), times: [], review: []
+  };
+  goTo('quizScreen');
+  renderQuestion();
+}
+function startTrueFalse() {
+  startQuiz(TF_DATA, 'True / False Blitz', 'tf');
+}
+function startSpeedRound() {
+  const all = [...GK_DATA, ...Object.values(STATE_DATA).flat()];
+  const qs = fisherYates(all).slice(0, Math.min(10, all.length));
+  startQuiz(qs, 'Speed Round', 'mcq', 8);
+  profile.achievements = profile.achievements || [];
+  if (!profile.achievements.includes('speed_flag')) {
+    profile.achievements.push('speed_flag');
+    saveProfileData();
+  }
+}
+function startDailyChallenge() {
+  const today = new Date().toDateString();
+  const seed = today.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
+  const all = fisherYates([...GK_DATA]);
+  const qs = [];
+  for (let i = 0; i < 10; i++) qs.push(all[(seed + i * 7) % all.length]);
+  startQuiz(qs, 'Daily Challenge', 'mcq');
+  profile.achievements = profile.achievements || [];
+  if (!profile.achievements.includes('daily_flag')) {
+    profile.achievements.push('daily_flag');
+    saveProfileData();
+  }
+  localStorage.setItem('nq_daily', today);
+  document.getElementById('dailyBanner').style.display = 'none';
+}
+function checkDailyBanner() {
+  const today = new Date().toDateString();
+  const last = localStorage.getItem('nq_daily');
+  document.getElementById('dailyBanner').style.display = last === today ? 'none' : 'block';
+}
+function retryQuiz() {
+  if (quizState.questions && quizState.questions.length) {
+    startQuiz(quizState.questions, quizState.tag, quizState.mode);
+  }
+}
+function renderQuestion() {
+  quizState.answered = false;
+  quizState.maskUsed = false;
+  quizState.hintUsed = false;
+  document.getElementById('maskBtn').disabled = false;
+  document.getElementById('skipBtn').disabled = quizState.skipUsed;
+  document.getElementById('hintBtn').disabled = false;
+  document.getElementById('hintText').style.display = 'none';
+  const total = quizState.questions.length;
+  const cur = quizState.questions[quizState.idx];
+  if (!cur) { showResult(); return; }
+  document.getElementById('scoreNum').textContent = quizState.score;
+  document.getElementById('streakNum').textContent = quizState.streak;
+  document.getElementById('progNum').textContent = `${quizState.idx + 1}/${total}`;
+  document.getElementById('progFill').style.width = `${(quizState.idx / total) * 100}%`;
+  document.getElementById('qtag').textContent = quizState.tag;
+  document.getElementById('qtext').textContent = cur.q;
+  const optBox = document.getElementById('options');
+  optBox.innerHTML = '';
+  quizState.qStart = Date.now();
+  if (quizState.mode === 'tf') {
+    optBox.className = 'tf-options';
+    const tBtn = document.createElement('button');
+    tBtn.className = 'tf-btn tf-true';
+    tBtn.textContent = 'TRUE ✓';
+    tBtn.onclick = () => selectAnswer(true, tBtn, cur.answer);
+    const fBtn = document.createElement('button');
+    fBtn.className = 'tf-btn tf-false';
+    fBtn.textContent = 'FALSE ✗';
+    fBtn.onclick = () => selectAnswer(false, fBtn, cur.answer);
+    optBox.appendChild(tBtn);
+    optBox.appendChild(fBtn);
+  } else {
+    optBox.className = 'options';
+    const opts = fisherYates(cur.options || []);
+    opts.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = `opt color-${i % 4}`;
+      btn.textContent = opt;
+      btn.onclick = () => selectAnswer(opt, btn, cur.answer);
+      optBox.appendChild(btn);
+    });
+  }
+  startTimer(cur.answer);
+}
+function startTimer(correctAnswer) {
+  clearInterval(quizState.timer);
+  const fill = document.getElementById('timerFill');
+  fill.classList.remove('urgent');
+  let elapsed = 0;
+  const totalTime = Math.max(1, Number(quizState.timerOverride ?? settings.timer) || 15) * 1000;
+  const step = 100;
+  fill.style.transition = 'none';
+  fill.style.width = '100%';
+  quizState.timer = setInterval(() => {
+    elapsed += step;
+    const pct = Math.max(0, 100 - (elapsed / totalTime) * 100);
+    fill.style.transition = `width ${step}ms linear`;
+    fill.style.width = pct + '%';
+    if (pct <= 30) fill.classList.add('urgent');
+    if (elapsed >= totalTime) {
+      clearInterval(quizState.timer);
+      if (!quizState.answered) selectAnswer(null, null, correctAnswer);
+    }
+  }, step);
+}
+function useMask() {
+  if (quizState.maskUsed || quizState.answered || quizState.mode === 'tf') return;
+  quizState.maskUsed = true;
+  document.getElementById('maskBtn').disabled = true;
+  const cur = quizState.questions[quizState.idx];
+  const wrong = [...document.querySelectorAll('.opt')].filter(b => b.textContent !== cur.answer && !b.classList.contains('masked'));
+  if (wrong.length) {
+    const pick = wrong[Math.floor(Math.random() * wrong.length)];
+    pick.classList.add('masked');
+  }
+  playClick();
+}
+function useSkip() {
+  if (quizState.skipUsed || quizState.answered) return;
+  quizState.skipUsed = true;
+  document.getElementById('skipBtn').disabled = true;
+  clearInterval(quizState.timer);
+  quizState.answered = true;
+  quizState.idx++;
+  if (quizState.idx >= quizState.questions.length) showResult();
+  else renderQuestion();
+  playClick();
+}
+function useHint() {
+  if (quizState.hintUsed || quizState.answered) return;
+  quizState.hintUsed = true;
+  document.getElementById('hintBtn').disabled = true;
+  const cur = quizState.questions[quizState.idx];
+  const hintEl = document.getElementById('hintText');
+  hintEl.textContent = cur.hint ? `💡 ${cur.hint}` : `💡 Think carefully about the key concept.`;
+  hintEl.style.display = 'block';
+  playClick();
+}
+function selectAnswer(chosen, btn, correctAnswer) {
+  if (quizState.answered) return;
+  quizState.answered = true;
+  clearInterval(quizState.timer);
+  document.getElementById('maskBtn').disabled = true;
+  document.getElementById('hintBtn').disabled = true;
+  const timeTaken = (Date.now() - quizState.qStart) / 1000;
+  quizState.times.push(timeTaken);
+  const isCorrect = chosen === correctAnswer;
+  const allBtns = document.querySelectorAll('.opt, .tf-btn');
+  allBtns.forEach(b => {
+    b.disabled = true;
+    if (quizState.mode === 'tf') {
+      if ((b.textContent.includes('TRUE') && correctAnswer === true) || (b.textContent.includes('FALSE') && correctAnswer === false)) {
+        b.style.boxShadow = '0 0 25px rgba(76,224,210,0.6)';
+        b.style.transform = 'scale(1.03)';
+      } else if (b === btn) {
+        b.style.opacity = '0.6';
+      }
+    } else {
+      if (b.textContent === correctAnswer) b.classList.add('correct');
+      else if (b === btn) b.classList.add('wrong');
+    }
+  });
+  quizState.review.push({
+    q: quizState.questions[quizState.idx].q,
+    chosen: chosen === null ? 'Time out' : String(chosen),
+    correct: String(correctAnswer),
+    isCorrect
+  });
+  if (isCorrect) {
+    quizState.score++;
+    quizState.streak++;
+    quizState.maxStreak = Math.max(quizState.maxStreak, quizState.streak);
+    playCorrect();
+    burstFlash();
+    if (settings.vibrate && navigator.vibrate) /* vibration removed */ (40);
+  } else {
+    quizState.streak = 0;
+    playWrong();
+    if (settings.vibrate && navigator.vibrate) /* vibration removed */ ([30, 40, 30]);
+  }
+  setTimeout(() => {
+    quizState.idx++;
+    if (quizState.idx >= quizState.questions.length) showResult();
+    else renderQuestion();
+  }, 850);
+}
+function showResult() {
+  clearInterval(quizState.timer);
+  const total = quizState.questions.length;
+  if (!total) { showToast('No questions available'); goTo('homeScreen'); return; }
+  const pct = Math.round((quizState.score / total) * 100);
+  const avgTime = quizState.times.length ? (quizState.times.reduce((a, b) => a + b, 0) / quizState.times.length).toFixed(1) : 0;
+  let xpGain = quizState.score * 10 + (pct === 100 ? 50 : 0) + Math.min(quizState.maxStreak * 5, 30);
+  if (quizState.tag.includes('Daily')) xpGain += 40;
+  if (quizState.tag.includes('Speed')) xpGain += 25;
+  addXP(xpGain);
+  profile.totalQuizzes++;
+  profile.totalCorrect += quizState.score;
+  profile.totalQuestions += total;
+  profile.bestStreak = Math.max(profile.bestStreak || 0, quizState.maxStreak);
+  if (pct === 100 && !profile.achievements.includes('perfect_flag')) {
+    profile.achievements.push('perfect_flag');
+  }
+  if (quizState.tag.includes('General') || quizState.tag.includes('GK') || quizState.tag.includes('Daily') || quizState.tag.includes('Speed')) {
+    profile.gkCorrect = (profile.gkCorrect || 0) + quizState.score;
+  }
+  saveProfileData();
+  checkAchievements();
+  addToLeaderboard(quizState.score, total, quizState.tag);
+  sessionStats.totalScore += quizState.score;
+  sessionStats.totalQuestions += total;
+  sessionStats.quizzesPlayed++;
+  sessionStats.lastQuiz = { score: quizState.score, total, tag: quizState.tag };
+  document.getElementById('resultScore').textContent = `${quizState.score}/${total}`;
+  document.getElementById('resultMsg').textContent = pct === 100 ? 'Perfect! 🎯' : pct >= 80 ? 'Excellent! 🔥' : pct >= 50 ? 'Good effort 👍' : 'Keep practicing 💪';
+  document.getElementById('resultStreak').textContent = `🔥 Best streak: ${quizState.maxStreak}`;
+  document.getElementById('rsAccuracy').textContent = pct + '%';
+  document.getElementById('rsXP').textContent = '+' + xpGain;
+  document.getElementById('rsTime').textContent = avgTime + 's';
+  const review = document.getElementById('reviewList');
+  review.innerHTML = quizState.review.map(r => `
+    <div class="review-item ${r.isCorrect ? 'correct' : 'wrong'}">
+      <div style="font-weight:600;margin-bottom:3px;">${r.q}</div>
+      <div style="font-size:0.78rem;color:var(--muted);">Your answer: <b style="color:${r.isCorrect ? 'var(--success)' : 'var(--danger)'}">${r.chosen}</b> ${r.isCorrect ? '' : `· Correct: <b style="color:var(--success)">${r.correct}</b>`}</div>
+    </div>`).join('');
+  if (pct === 100) spawnConfetti(100);
+  renderScoreboard();
+  goTo('resultScreen');
+}
+function renderScoreboard() {
+  const box = document.getElementById('scoreboard');
+  if (!sessionStats.lastQuiz) { box.style.display = 'none'; return; }
+  box.style.display = 'block';
+  const lq = sessionStats.lastQuiz;
+  const pct = Math.round((lq.score / lq.total) * 100);
+  let msg = pct === 100 ? 'Perfect score! 🎯' : pct >= 80 ? 'Excellent! 🔥' : pct >= 50 ? 'Good effort 👍' : 'Keep practicing 💪';
+  box.innerHTML = `
+    <div class="sb-top">
+      <div><div class="sb-title">Last: ${lq.tag}</div><div class="sb-tag">${msg}</div></div>
+    </div>
+    <div class="sb-row">
+      <div><div class="n">${lq.score}/${lq.total}</div><div class="l">Last</div></div>
+      <div><div class="n">${sessionStats.totalScore}/${sessionStats.totalQuestions}</div><div class="l">Total</div></div>
+      <div><div class="n">${sessionStats.quizzesPlayed}</div><div class="l">Quizzes</div></div>
+    </div>
+    <button class="lifeline-btn" style="margin-top:10px;width:100%;text-align:center;" onclick="retryQuiz()">🔁 Play Last Again</button>`;
+}
+function resetProgress() {
+  if (confirm('Reset all XP, achievements and stats? This cannot be undone.')) {
+    profile.xp = 0; profile.level = 1; profile.totalQuizzes = 0;
+    profile.totalCorrect = 0; profile.totalQuestions = 0; profile.bestStreak = 0;
+    profile.achievements = []; profile.statesPlayed = []; profile.gkCorrect = 0;
+    saveProfileData();
+    renderXPBar();
+    renderProfileBadge();
+    showToast('Progress reset');
+  }
+}
+
+/* ---------- Boot ---------- */
+function bootApp() {
+  loadProfile();
+  loadSettings();
+  initProfileForm();
+  buildClassGrid();
+  buildStateGrid();
+  renderProfileBadge();
+  renderXPBar();
+  checkDailyBanner();
+  goTo('homeScreen');
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bootApp, { once: true });
+else bootApp();
+</script>
+
+
+
+
+</body>
+</html>
+
