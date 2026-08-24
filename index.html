@@ -214,6 +214,8 @@ h1 {
 
 .screen { display: none; }
 .screen.active { display: block; }
+#aiStudyScreen{display:none!important}
+.xp-bar-wrap,.profile-avatar .level-dot{display:none!important}
 
 /* Search */
 .search-box {
@@ -382,6 +384,42 @@ h1 {
 .bottom-nav-btn small { display:block; font-size:.56rem; margin-top:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .bottom-nav-btn.active,.bottom-nav-btn:hover { color:var(--cyan); background:rgba(124,92,252,.12); }
 @media(max-width:380px){ .bottom-nav-btn small{font-size:.50rem;} }
+.ai-panel{background:rgba(15,20,40,.72);border:1px solid rgba(130,100,255,.28);border-radius:18px;padding:16px;box-shadow:0 10px 35px rgba(0,0,0,.22)}.ai-title{font-size:1.08rem;font-weight:800;margin-bottom:8px}.ai-note{font-size:.76rem;color:var(--muted);line-height:1.45;margin-bottom:14px}.ai-status{font-size:.78rem;color:var(--cyan);margin:12px 0}.ai-results{display:grid;gap:10px}.ai-result{padding:12px;border-radius:12px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08)}.ai-result a{color:var(--cyan);text-decoration:none}.ai-result h4{margin:0 0 5px;font-size:.86rem}.ai-result p{margin:0;color:#c9cce0;font-size:.75rem;line-height:1.45}
+
+/* ===== Compact mobile fit v5 ===== */
+html,body{width:100%;min-height:100%;overflow-x:hidden}
+body{margin:0!important;padding:0!important;font-size:14px!important}
+.app,.container,.main,.app-shell{width:100%!important;max-width:100%!important;margin:0!important;padding-left:8px!important;padding-right:8px!important;box-sizing:border-box!important}
+header,.topbar,.app-header{padding:8px 6px!important;min-height:0!important}
+h1,h2,h3{margin-top:4px!important;margin-bottom:6px!important;line-height:1.15!important}
+.screen{padding:8px!important;min-height:0!important;box-sizing:border-box!important}
+.card,.panel,.section,.profile-card,.modecard{box-sizing:border-box!important}
+#homeScreen{padding:4px!important;border-radius:0!important}
+#homeScreen .modegrid{gap:7px!important}
+#homeScreen .modecard{min-height:54px!important;height:auto!important;padding:9px 8px!important;border-radius:12px!important;box-shadow:none!important}
+#homeScreen .modecard h3,#homeScreen .modecard .title{font-size:.86rem!important;margin:0!important}
+#homeScreen .modecard p,#homeScreen .modecard small{font-size:.65rem!important;margin:2px 0 0!important}
+#homeScreen .home-actions{gap:5px!important;margin-top:7px!important}
+#homeScreen .home-action-btn{padding:7px 4px!important;border-radius:9px!important;font-size:.66rem!important}
+#homeScreen .profile-badge{padding:7px!important;border-radius:10px!important}
+button,.btn{min-height:34px!important;padding:7px 10px!important}
+input,select{min-height:36px!important;padding:7px 9px!important;box-sizing:border-box!important}
+.option,.opt,.answer-option,.quiz-option{min-height:42px!important;padding:9px 10px!important;margin-bottom:6px!important;box-sizing:border-box!important}
+.question,.question-card{padding:10px!important;margin-bottom:8px!important}
+.quiz-header,.quiz-top{padding:6px!important}
+.progress,.timer{font-size:.72rem!important}
+.bottom-nav{position:fixed!important;left:0!important;right:0!important;bottom:0!important;width:100%!important;margin:0!important;border-radius:0!important;padding:4px 3px!important;gap:2px!important;box-sizing:border-box!important;box-shadow:none!important}
+.bottom-nav-btn{padding:5px 1px!important}
+.bottom-nav-btn span{font-size:.9rem!important}
+.bottom-nav-btn small{font-size:.5rem!important;margin-top:1px!important}
+main,.content{padding-bottom:58px!important;box-sizing:border-box!important}
+.auto-back{padding:6px 9px!important;margin-bottom:6px!important}
+.ai-panel{padding:10px!important;border-radius:12px!important;box-shadow:none!important}
+.ai-results{gap:6px!important}.ai-result{padding:8px!important;border-radius:9px!important}
+@media(max-width:380px){body{font-size:13px!important}.screen{padding:5px!important}.bottom-nav-btn small{font-size:.45rem!important}#homeScreen .modecard{min-height:48px!important;padding:7px!important}.option,.opt,.answer-option,.quiz-option{min-height:38px!important;padding:7px 8px!important}}
+
+.next-question-btn{display:block;width:min(100%,420px);margin:12px auto 0;padding:11px 16px;border:0;border-radius:12px;font-weight:800;font-size:14px;cursor:pointer;}
+.next-question-btn:disabled{opacity:.45;cursor:not-allowed;}
 </style>
 <style>
 html,body{width:100%;min-height:100%;margin:0;padding:0;overflow-x:hidden}
@@ -391,27 +429,78 @@ body{min-height:100vh}
 .profile-field select,.profile-field input,select,input{box-sizing:border-box}
 .option.correct,.answer-option.correct,.quiz-option.correct{background:#22c55e !important;color:#fff !important;border-color:#22c55e !important}
 .option.wrong,.answer-option.wrong,.quiz-option.wrong{background:#ef4444 !important;color:#fff !important;border-color:#ef4444 !important}
+</style><style id="edge-to-edge-mobile-fix">html,body{width:100%;min-height:100%;margin:0!important;padding:0!important;overflow-x:hidden!important}body{box-sizing:border-box!important;background:#070914!important}body *{box-sizing:border-box}body:before,body:after{display:none!important;content:none!important}.container,.app,.shell,.page,.screen,.main,.content,.wrapper{max-width:none!important;width:100%!important;margin-left:0!important;margin-right:0!important}.container,.app,.shell,.page,.screen,.main,.content,.wrapper{box-shadow:none!important;border-radius:0!important}@media(max-width:700px){html,body{min-height:100dvh!important}.container,.app,.shell,.page,.screen,.main,.content{width:100vw!important;min-height:100dvh!important;padding-left:0!important;padding-right:0!important}header,nav,.bottom-nav,.topbar{width:100vw!important;left:0!important;right:0!important}input,select,button,textarea{max-width:100%!important}}</style>
+<style id="remove-neuron-outer-box">
+html,body{margin:0!important;padding:0!important;width:100%!important;min-height:100%!important;}
+body{display:block!important;align-items:initial!important;justify-content:initial!important;background:radial-gradient(ellipse at top,#10162A,#0B0F19 60%)!important;}
+.wrap{width:100%!important;max-width:none!important;padding:0!important;margin:0!important;position:relative!important;}
+.card{width:100%!important;max-width:none!important;min-height:100vh!important;max-height:none!important;margin:0!important;padding:18px 14px 84px!important;background:transparent!important;background-color:transparent!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;border:0!important;border-radius:0!important;box-shadow:none!important;overflow:visible!important;}
+.card::-webkit-scrollbar{display:none!important}.card{scrollbar-width:none!important;}
+#net{z-index:0!important}.wrap{z-index:1!important;}
+@media(max-width:700px){.card{min-height:100dvh!important;padding:14px 10px 82px!important;}}
+</style>
+
+<style id="compact-mobile-nav-fix">
+/* Compact mobile layout */
+.wrap{max-width:460px!important;padding:8px!important;width:100%!important}
+.card{padding:16px 14px!important;max-height:none!important;overflow:visible!important}
+h1{font-size:1.32rem!important}
+.sub{font-size:.76rem!important;margin-bottom:12px!important}
+.modegrid{gap:8px!important}
+#homeScreen{padding:4px!important;border-radius:0!important}
+#homeScreen .modecard{min-height:62px!important;border-radius:13px!important;padding:10px 12px!important}
+#homeScreen .modecard .icon{font-size:1.25rem!important}
+#homeScreen .modecard .ttl{font-size:.84rem!important}
+#homeScreen .modecard .dsc{font-size:.65rem!important}
+.choicegrid{gap:7px!important}
+.btn-primary,.btn-secondary,.lifeline-btn{padding:9px 12px!important;font-size:.78rem!important}
+.bottom-nav{position:fixed!important;left:0!important;right:0!important;bottom:0!important;top:auto!important;width:100%!important;max-width:none!important;height:58px!important;z-index:90!important;margin:0!important;border-radius:0!important;padding:5px 4px!important;display:grid!important;grid-template-columns:repeat(5,1fr)!important;align-items:center!important;background:rgba(11,15,25,.97)!important;backdrop-filter:blur(10px)!important;border-top:1px solid rgba(124,92,252,.28)!important;box-shadow:0 -5px 18px rgba(0,0,0,.28)!important}
+.bottom-nav-btn{width:100%!important;height:48px!important;padding:4px 1px!important;border-radius:9px!important}
+.bottom-nav-btn span{font-size:.9rem!important}
+.bottom-nav-btn small{font-size:.5rem!important;margin-top:2px!important}
+#homeScreen{padding-bottom:68px!important}
+.screen{padding-bottom:12px!important}
+@media(max-width:380px){.wrap{padding:5px!important}.card{padding:12px 10px!important}.bottom-nav{height:55px!important}.bottom-nav-btn{height:46px!important}}
+</style>
+
+<style id="compact-mobile-width-fix">
+*{box-sizing:border-box!important;max-width:100%!important}
+html,body{width:100%!important;max-width:100vw!important;overflow-x:hidden!important;margin:0!important;padding:0!important}
+body{font-size:14px!important}
+#app,.app,.container,.shell,.page,.screen,.main,.content,.content-area,.quiz-container,.home-container{width:100%!important;max-width:100%!important;margin-left:auto!important;margin-right:auto!important;padding-left:8px!important;padding-right:8px!important}
+.card,.panel,.section,.hero,.quiz-card,.question-card,.profile-card,.modal,.box{width:100%!important;max-width:100%!important;margin-left:0!important;margin-right:0!important}
+button,input,select,textarea{max-width:100%!important}
+.grid,.cards,.options,.subjects,.chapters{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+img,svg,canvas,video{max-width:100%!important;height:auto!important}
+@media(max-width:360px){
+ body{font-size:13px!important}
+ #app,.app,.container,.shell,.page,.screen,.main,.content,.content-area,.quiz-container,.home-container{padding-left:6px!important;padding-right:6px!important}
+ .grid,.cards,.options,.subjects,.chapters{gap:6px!important}
+}
 </style>
 <style>
-/* ===== True mobile full-screen layout ===== */
-html,body{width:100%;min-width:100%;height:100%;margin:0;padding:0;overflow-x:hidden;}
-body{display:block;min-height:100dvh;background:var(--bg);}
-.wrap{width:100%;max-width:none;height:100dvh;padding:0;margin:0;}
-.card{width:100%;max-width:none;height:100dvh;max-height:none;min-height:100dvh;margin:0;padding:18px 14px 14px;border:0;border-radius:0;overflow-y:auto;overflow-x:hidden;box-shadow:none;background:rgba(20,27,48,.96);}
-.card::-webkit-scrollbar{width:0;height:0;}
-.card{scrollbar-width:none;}
-.screen{width:100%;}
-.bottom-nav{position:sticky;bottom:0;margin-left:0;margin-right:0;border-radius:14px;}
-/* Keep profile fields always visible and readable */
-#profileScreen .field{display:block !important;width:100%;}
-#profileScreen .field label{display:block !important;color:var(--muted) !important;}
-#profClass,#profState{display:block !important;width:100% !important;min-height:46px !important;background:#141b30 !important;color:#EDEAF6 !important;border:1px solid rgba(76,224,210,.35) !important;opacity:1 !important;visibility:visible !important;}
-#profClass option,#profState option{background:#141b30;color:#EDEAF6;}
-.profile-summary{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 14px;}
-.profile-summary .ps-item{padding:10px 11px;border:1px solid rgba(76,224,210,.20);border-radius:12px;background:linear-gradient(135deg,rgba(124,92,252,.12),rgba(76,224,210,.08));}
-.profile-summary .ps-label{font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
-.profile-summary .ps-value{font-family:'Sora',sans-serif;font-weight:700;font-size:.84rem;margin-top:3px;color:var(--text);}
+/* Compact quiz controls: removed 50/50, Skip and Hint */
+.lifeline-row,.lifeline-btn,#maskBtn,#skipBtn,#hintBtn,#hintText{display:none!important}
 </style>
+<script>
+(function(){
+  // Robust countdown: uses elapsed real time, not repeated interval decrements.
+  window.startQuizCountdown=function(seconds,onTick,onDone){
+    seconds=Math.max(0,Number(seconds)||0);
+    var end=Date.now()+seconds*1000, stopped=false, timer=null;
+    function tick(){
+      if(stopped)return;
+      var left=Math.max(0,end-Date.now());
+      var sec=Math.ceil(left/1000);
+      if(typeof onTick==='function') onTick(sec);
+      if(left<=0){stopped=true; if(typeof onDone==='function')onDone(); return;}
+      timer=setTimeout(tick,250);
+    }
+    tick();
+    return function(){stopped=true; if(timer)clearTimeout(timer);};
+  };
+})();
+</script>
 </head>
 <body>
 <canvas id="net"></canvas>
@@ -424,60 +513,43 @@ body{display:block;min-height:100dvh;background:var(--bg);}
     <!-- ==================== PROFILE SETUP ==================== -->
     <div id="profileScreen" class="screen">
       <div class="sub" style="margin-top:-4px;">Create your learner profile</div>
-      <div class="profile-summary" aria-label="Current profile">
-        <div class="ps-item"><div class="ps-label">Class</div><div class="ps-value" id="profileClassPreview">Not selected</div></div>
-        <div class="ps-item"><div class="ps-label">State / UT</div><div class="ps-value" id="profileStatePreview">Not selected</div></div>
-      </div>
       <div class="field">
         <label>Your Name</label>
         <input type="text" id="profName" placeholder="e.g. Aryan" maxlength="20">
       </div>
       <div class="field">
-        <label>Class Group</label>
-        <select id="profClass"></select>
+        <label>Home State / UT</label>
+        <select id="profState" onchange="populateProfileBoards()"></select>
       </div>
       <div class="field">
-        <label>Home State / UT</label>
-        <select id="profState"></select>
+        <label>Board</label>
+        <select id="profBoard"></select>
+      </div>
+      <div class="field">
+        <label>Class</label>
+        <select id="profClass" onchange="populateProfileStream()"></select>
+      </div>
+      <div class="field" id="profStreamWrap">
+        <label>Stream (Class 11–12)</label>
+        <select id="profStream"><option>Arts</option><option>Science</option><option>Commerce</option><option>Vocational</option></select>
       </div>
       <button class="btn-primary" onclick="saveProfile()">Start Learning Journey →</button>
     </div>
 
     <!-- ==================== HOME ==================== -->
     <div id="homeScreen" class="screen active">
-      <div class="profile-badge" id="profileBadge"></div>
-      <button class="lifeline-btn" id="profileActionBtn" style="width:100%;margin:8px 0 14px;text-align:center;" onclick="editProfile()">👤 Create / Edit Profile</button>
-      <div class="xp-bar-wrap" id="xpBarWrap">
-        <div class="xp-bar-label"><span id="xpLevelLabel">Level 1</span><span id="xpText">0 / 100 XP</span></div>
-        <div class="xp-bar"><div class="xp-bar-fill" id="xpFill" style="width:0%"></div></div>
-      </div>
       <div id="dailyBanner" class="daily-banner" style="display:none;">
         <div class="db-title">🔥 Daily Challenge Available!</div>
-        <div class="db-sub">Complete today's special quiz for bonus XP</div>
+        <div class="db-sub">Complete today's special quiz</div>
         <button class="btn-primary" style="margin-top:10px;padding:10px;" onclick="startDailyChallenge()">Play Daily Challenge</button>
       </div>
       <div class="scoreboard" id="scoreboard" style="display:none;"></div>
       <div class="modegrid">
-        <button class="modecard mode-a" onclick="openClassMode()">
-          <div class="icon">🎓</div>
-          <div><div class="ttl">Class & Subject Quiz</div><div class="dsc">Curriculum based • Class 1 to 12</div></div>
-        </button>
-        <button class="modecard mode-b" onclick="goTo('statePickScreen')">
-          <div class="icon">🗺️</div>
-          <div><div class="ttl">State GK Challenge</div><div class="dsc">All 28 states + 8 UTs covered</div></div>
-        </button>
-        <button class="modecard mode-c" onclick="startQuiz(GK_DATA, 'General Knowledge', 'mcq')">
-          <div class="icon">🌍</div>
-          <div><div class="ttl">GK Marathon</div><div class="dsc">World, Science, History, Current Affairs</div></div>
-        </button>
-        <button class="modecard mode-d" onclick="startTrueFalse()">
-          <div class="icon">⚡</div>
-          <div><div class="ttl">True / False Blitz</div><div class="dsc">Fast paced • High intensity</div></div>
-        </button>
-        <button class="modecard mode-e" onclick="startSpeedRound()">
-          <div class="icon">⏱️</div>
-          <div><div class="ttl">Speed Round</div><div class="dsc">10 questions • 8 seconds each</div></div>
-        </button>
+        <button class="modecard mode-a" onclick="openClassMode()"><div class="icon">🎓</div><div><div class="ttl">Class & Subject Quiz</div><div class="dsc">Curriculum based • Class 1 to 12</div></div></button>
+        <button class="modecard mode-b" onclick="goTo('statePickScreen')"><div class="icon">🗺️</div><div><div class="ttl">State GK Challenge</div><div class="dsc">All 28 states + 8 UTs covered</div></div></button>
+        <button class="modecard mode-c" onclick="startQuiz(GK_DATA, 'General Knowledge', 'mcq')"><div class="icon">🌍</div><div><div class="ttl">GK Marathon</div><div class="dsc">World, Science, History, Current Affairs</div></div></button>
+        <button class="modecard mode-d" onclick="startTrueFalse()"><div class="icon">⚡</div><div><div class="ttl">True / False Blitz</div><div class="dsc">Fast paced • High intensity</div></div></button>
+        <button class="modecard mode-e" onclick="startSpeedRound()"><div class="icon">⏱️</div><div><div class="ttl">Speed Round</div><div class="dsc">10 questions • 8 seconds each</div></div></button>
       </div>
       <nav class="bottom-nav" aria-label="Main navigation">
         <button class="bottom-nav-btn active" onclick="goTo('homeScreen')"><span>⌂</span><small>Home</small></button>
@@ -523,6 +595,23 @@ body{display:block;min-height:100dvh;background:var(--bg);}
       <div class="choicegrid" id="stateGrid"></div>
     </div>
 
+    <!-- ==================== AI LIVE STUDY ==================== -->
+    <div id="aiStudyScreen" class="screen">
+      <button class="backbtn" onclick="goTo('homeScreen')">← Back</button>
+      <div class="sub" style="margin-top:-4px;">AI Live Study</div>
+      <div class="ai-panel">
+        <div class="ai-title">🤖 Multi-AI Study Assistant</div>
+        <div class="ai-note">Live chapter research is available without an AI key. Optional AI generation uses your own provider key.</div>
+        <div class="field"><label>Class</label><select id="aiClassSelect"></select></div>
+        <div class="field"><label>Subject</label><select id="aiSubjectSelect"></select></div>
+        <div class="field"><label>Chapter</label><select id="aiChapterSelect"></select></div>
+        <div class="field"><label>AI Provider</label><select id="aiProviderSelect"><option value="openai">ChatGPT / OpenAI</option><option value="grok">Grok / xAI</option><option value="claude">Claude / Anthropic</option><option value="gemini">Gemini / Google</option><option value="perplexity">Perplexity</option><option value="deepseek">DeepSeek</option><option value="qwen">Qwen</option><option value="mistral">Mistral</option><option value="aifiesta">AI Fiesta</option></select></div>
+        <button class="btn-primary" onclick="aiLiveSearch()">🔎 Live Search Chapter</button>
+        <button class="btn-secondary" onclick="aiGenerateQuestions()">✨ Generate AI Questions</button>
+        <div id="aiStatus" class="ai-status"></div><div id="aiResults" class="ai-results"></div>
+      </div>
+    </div>
+
     <!-- ==================== QUIZ ==================== -->
     <div id="quizScreen" class="screen">
       <div class="hud">
@@ -532,19 +621,14 @@ body{display:block;min-height:100dvh;background:var(--bg);}
       </div>
       <div class="progressbar"><div class="progressbar-fill" id="progFill"></div></div>
       <div class="timerbar"><div class="timerbar-fill" id="timerFill"></div></div>
-      <div class="lifeline-row">
-        <button class="lifeline-btn" id="maskBtn" onclick="useMask()">🎭 50-50</button>
-        <button class="lifeline-btn" id="skipBtn" onclick="useSkip()">⏭️ Skip</button>
-        <button class="lifeline-btn" id="hintBtn" onclick="useHint()">💡 Hint</button>
-      </div>
-      <div class="question-box">
+<div class="question-box">
         <div>
           <span class="qtag" id="qtag">Quiz</span>
           <div class="q" id="qtext">–</div>
-          <div id="hintText" style="display:none;margin-top:8px;font-size:0.8rem;color:var(--amber);"></div>
         </div>
       </div>
       <div class="options" id="options"></div>
+      <button id="nextQuestionBtn" class="btn-primary next-question-btn" onclick="nextQuestion()" disabled>Next Question →</button>
     </div>
 
     <!-- ==================== RESULTS ==================== -->
@@ -556,7 +640,7 @@ body{display:block;min-height:100dvh;background:var(--bg);}
       </div>
       <div class="result-stats">
         <div class="result-stat"><div class="rs-num" id="rsAccuracy">0%</div><div class="rs-lbl">Accuracy</div></div>
-        <div class="result-stat"><div class="rs-num" id="rsXP">+0</div><div class="rs-lbl">XP Earned</div></div>
+        
         <div class="result-stat"><div class="rs-num" id="rsTime">0s</div><div class="rs-lbl">Avg Time</div></div>
       </div>
       <div class="sub" style="text-align:left;margin-bottom:8px;">Review Answers</div>
@@ -585,12 +669,8 @@ body{display:block;min-height:100dvh;background:var(--bg);}
       <button class="backbtn" onclick="goTo('homeScreen')">← Back</button>
       <div class="sub" style="margin-top:-4px;">Settings</div>
       <div class="setting-row">
-        <div><div class="setting-label">Sound Effects</div><div class="setting-desc">Correct / Wrong / Level up sounds</div></div>
+        <div><div class="setting-label">Sound Effects</div><div class="setting-desc">Correct / Wrong sounds</div></div>
         <div class="toggle on" id="toggleSound" onclick="toggleSetting('sound')"></div>
-      </div>
-      <div class="setting-row">
-        <div><div class="setting-label">Vibration</div><div class="setting-desc">Haptic feedback on answers</div></div>
-        <div class="toggle on" id="toggleVibrate" onclick="toggleSetting('vibrate')"></div>
       </div>
       <div class="setting-row">
         <div><div class="setting-label">Timer Duration</div><div class="setting-desc">Seconds per question</div></div>
@@ -610,8 +690,16 @@ body{display:block;min-height:100dvh;background:var(--bg);}
           <option value="15">15</option>
         </select>
       </div>
+      <div class="setting-row" style="display:block;">
+        <div><div class="setting-label">Background AI Providers</div><div class="setting-desc">Optional. Configured providers run silently during chapter quizzes. Keys stay on this device.</div></div>
+        <div style="display:flex;gap:8px;margin-top:8px;">
+          <select id="aiKeyProvider" style="flex:1;padding:8px;border-radius:8px;background:rgba(255,255,255,.06);color:var(--text);border:1px solid rgba(255,255,255,.12);"><option value="openai">ChatGPT/OpenAI</option><option value="grok">Grok/xAI</option><option value="claude">Claude</option><option value="gemini">Gemini</option><option value="perplexity">Perplexity</option><option value="deepseek">DeepSeek</option><option value="qwen">Qwen</option><option value="mistral">Mistral</option></select>
+          <input id="aiKeyInput" type="password" placeholder="API key" style="flex:1;min-width:0;">
+          <button class="lifeline-btn" onclick="saveAIKey()">Save</button>
+        </div>
+      </div>
       <div class="setting-row">
-        <div><div class="setting-label">Reset All Progress</div><div class="setting-desc">Clears XP, achievements & stats</div></div>
+        <div><div class="setting-label">Reset All Progress</div><div class="setting-desc">Clears achievements & stats</div></div>
         <button class="lifeline-btn" style="color:var(--danger);border-color:rgba(255,92,122,0.4);" onclick="resetProgress()">Reset</button>
       </div>
     </div>
@@ -742,11 +830,10 @@ function playTone(freq, duration, type = 'sine', volume = 0.15) {
 }
 function playCorrect() { playTone(880, 0.12, 'sine', 0.12); setTimeout(() => playTone(1100, 0.15, 'sine', 0.1), 80); }
 function playWrong() { playTone(220, 0.25, 'sawtooth', 0.08); }
-function playLevelUp() { playTone(523, 0.12); setTimeout(() => playTone(659, 0.12), 100); setTimeout(() => playTone(784, 0.2), 200); }
 function playClick() { playTone(600, 0.05, 'sine', 0.06); }
 
 /* ---------- Settings & Persistence ---------- */
-let settings = { sound: true, vibrate: true, timer: 15, qCount: 10 };
+let settings = { sound: true, vibrate: false, timer: 15, qCount: 10 };
 function loadSettings() {
   try {
     const s = JSON.parse(localStorage.getItem('nq_settings') || '{}');
@@ -757,18 +844,16 @@ function loadSettings() {
   settings.timer = [5,8,10,15,20,30].includes(Number(settings.timer)) ? Number(settings.timer) : 15;
   settings.qCount = [5,10,15,20].includes(Number(settings.qCount)) ? Number(settings.qCount) : 10;
   const sound = document.getElementById('toggleSound');
-  const vibrate = document.getElementById('toggleVibrate');
   const timer = document.getElementById('timerSelect');
   const qCount = document.getElementById('qCountSelect');
   if (sound) sound.classList.toggle('on', settings.sound);
-  if (vibrate) vibrate.classList.toggle('on', settings.vibrate);
   if (timer) timer.value = String(settings.timer);
   if (qCount) qCount.value = String(settings.qCount);
   saveSettings();
 }
 function saveSettings() { localStorage.setItem('nq_settings', JSON.stringify(settings)); }
 function toggleSetting(key) {
-  settings[key] = key === 'vibrate' ? false : !settings[key];
+  settings[key] = !settings[key];
   document.getElementById('toggle' + key.charAt(0).toUpperCase() + key.slice(1)).classList.toggle('on', settings[key]);
   saveSettings();
   playClick();
@@ -777,7 +862,7 @@ function updateTimerSetting() { settings.timer = +document.getElementById('timer
 function updateQCountSetting() { settings.qCount = +document.getElementById('qCountSelect').value; saveSettings(); }
 
 /* ---------- Profile, XP, Stats ---------- */
-let profile = { name: '', cls: '', state: '', xp: 0, level: 1, totalQuizzes: 0, totalCorrect: 0, totalQuestions: 0, bestStreak: 0, achievements: [] };
+let profile = { name: '', cls: '', state: '', board: 'CBSE', stream: '', totalQuizzes: 0, totalCorrect: 0, totalQuestions: 0, bestStreak: 0, achievements: [] };
 function loadProfile() {
   try {
     const p = JSON.parse(localStorage.getItem('nq_profile') || 'null');
@@ -785,35 +870,12 @@ function loadProfile() {
       profile = { ...profile, ...p };
       const oldToNew = {'Class 1-5':'Class 1','Class 6-8':'Class 6','Class 9-10':'Class 9','Class 11-12':'Class 11'};
       if (oldToNew[profile.cls]) profile.cls = oldToNew[profile.cls];
+      if (!profile.board) profile.board='CBSE'; if (!profile.stream) profile.stream=''; if (!STATE_BOARDS[profile.state]) profile.state='West Bengal';
     }
   } catch (e) {}
 }
 function saveProfileData() { localStorage.setItem('nq_profile', JSON.stringify(profile)); }
 function xpForLevel(lvl) { return lvl * 100; }
-function addXP(amount) {
-  profile.xp += amount;
-  let leveled = false;
-  while (profile.xp >= xpForLevel(profile.level)) {
-    profile.xp -= xpForLevel(profile.level);
-    profile.level++;
-    leveled = true;
-  }
-  saveProfileData();
-  renderXPBar();
-  if (leveled) {
-    playLevelUp();
-    showToast(`🎉 Level Up! You are now Level ${profile.level}`);
-    spawnConfetti(60);
-  }
-  return amount;
-}
-function renderXPBar() {
-  const needed = xpForLevel(profile.level);
-  const pct = Math.min(100, (profile.xp / needed) * 100);
-  document.getElementById('xpLevelLabel').textContent = `Level ${profile.level}`;
-  document.getElementById('xpText').textContent = `${profile.xp} / ${needed} XP`;
-  document.getElementById('xpFill').style.width = pct + '%';
-}
 
 /* ---------- Achievements ---------- */
 const ACHIEVEMENTS = [
@@ -823,8 +885,6 @@ const ACHIEVEMENTS = [
   { id: 'perfect', name: 'Perfectionist', desc: 'Score 100% in any quiz', icon: '💯', check: p => p.achievements.includes('perfect_flag') },
   { id: 'streak_5', name: 'On Fire', desc: 'Get a 5+ streak', icon: '🔥', check: p => p.bestStreak >= 5 },
   { id: 'streak_10', name: 'Unstoppable', desc: 'Get a 10+ streak', icon: '⚡', check: p => p.bestStreak >= 10 },
-  { id: 'level_5', name: 'Rising Star', desc: 'Reach Level 5', icon: '⭐', check: p => p.level >= 5 },
-  { id: 'level_10', name: 'Master Mind', desc: 'Reach Level 10', icon: '🧠', check: p => p.level >= 10 },
   { id: 'state_explorer', name: 'State Explorer', desc: 'Play 5 different state quizzes', icon: '🗺️', check: p => (p.statesPlayed || []).length >= 5 },
   { id: 'gk_master', name: 'GK Master', desc: 'Answer 100 GK questions correctly', icon: '🌍', check: p => (p.gkCorrect || 0) >= 100 },
   { id: 'speed_demon', name: 'Speed Demon', desc: 'Complete a Speed Round', icon: '⏱️', check: p => p.achievements.includes('speed_flag') },
@@ -1587,74 +1647,117 @@ let selectedClass = null;
 let currentDifficulty = 'all';
 let quizState = {
   questions: [], idx: 0, score: 0, tag: '', answered: false,
-  timer: null, timerOverride: null, maskUsed: false, skipUsed: false, hintUsed: false,
+  timer: null, timerOverride: null, 
   streak: 0, maxStreak: 0, mode: 'mcq', startTime: 0, times: [], review: []
 };
 let sessionStats = { totalScore: 0, totalQuestions: 0, quizzesPlayed: 0, lastQuiz: null };
 
-/* ---------- Init ---------- */
-function initProfileForm() {
-  const classSel = document.getElementById('profClass');
-  const stateSel = document.getElementById('profState');
-  if (!classSel || !stateSel) return;
-  const classList = Array.from({length:12}, (_,i)=>`Class ${i+1}`);
-  classSel.innerHTML = classList.map(c => `<option value="${c}">${c}</option>`).join('');
-  const stateList = Object.keys(STATE_DATA);
-  stateSel.innerHTML = stateList.map(st => `<option value="${st}">${st}</option>`).join('');
-  const updatePreview = () => {
-    const cp=document.getElementById('profileClassPreview');
-    const sp=document.getElementById('profileStatePreview');
-    if(cp) cp.textContent=classSel.value || 'Not selected';
-    if(sp) sp.textContent=stateSel.value || 'Not selected';
-  };
-  classSel.onchange=updatePreview;
-  stateSel.onchange=updatePreview;
-  updatePreview();
+/* ---------- Background AI + live curriculum research ---------- */
+let bgChapterCache = new Map();
+async function backgroundSyllabusChapters(meta){
+  const cacheKey='syllabus|'+[meta.state,meta.board,meta.className,meta.stream||'',meta.subject].join('|');
+  if(window._syllabusCache?.[cacheKey]) return window._syllabusCache[cacheKey];
+  window._syllabusCache=window._syllabusCache||{};
+  const cfg=aiCfg(); const provider=['openai','grok','claude','gemini','perplexity','deepseek','qwen','mistral'].find(p=>cfg[p]);
+  let chapters=[];
+  if(provider){
+    const prompt=`Find the current official/recognized school syllabus chapter or unit names for India, state ${meta.state}, board ${meta.board}, ${meta.className}, ${meta.stream||''}, subject ${meta.subject}. Return ONLY a JSON array of chapter/unit name strings. Do not invent names; if the exact board syllabus cannot be verified, return an empty array.`;
+    try{const text=await callAI(provider,cfg[provider],prompt); const raw=text.replace(/^```json|```$/g,'').trim(); const arr=JSON.parse(raw); if(Array.isArray(arr)) chapters=arr.filter(x=>typeof x==='string'&&x.trim()).slice(0,60).map(x=>({name:x.trim(),questions:[]}));}catch(e){}
+  }
+  if(!chapters.length){
+    const local=getChapterList(selectedClass,meta.subject).filter(x=>x.questions.length);
+    chapters=local.length?local:Array.from({length:12},(_,i)=>({name:`Chapter ${i+1}`,questions:[]}));
+  }
+  window._syllabusCache[cacheKey]=chapters; return chapters;
 }
+
+async function backgroundChapterAI(meta){
+  const key=[meta.state,meta.board,meta.className,meta.stream,meta.subject,meta.chapter].join('|');
+  if(bgChapterCache.has(key)) return bgChapterCache.get(key);
+  const promise=(async()=>{
+    const query=encodeURIComponent(`${meta.state} ${meta.board} ${meta.className} ${meta.stream||''} ${meta.subject} ${meta.chapter} syllabus notes questions`);
+    const sources=[];
+    try{
+      const r=await fetch(`https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=${query}&gsrnamespace=0&gsrlimit=6&prop=extracts|info&exintro=1&explaintext=1&inprop=url&format=json&origin=*`);
+      const d=await r.json(); Object.values(d.query?.pages||{}).forEach(p=>sources.push({title:p.title,url:p.fullurl,extract:p.extract||''}));
+    }catch(e){}
+    const cfg=aiCfg(); const providerOrder=['openai','grok','claude','gemini','perplexity','deepseek','qwen','mistral'];
+    const provider=providerOrder.find(p=>cfg[p]);
+    let generated=[];
+    if(provider){
+      const sourceText=sources.map(x=>`${x.title}: ${x.extract}`).join('\n').slice(0,12000);
+      const prompt=`You are a background curriculum assistant. Student profile: state=${meta.state}; board=${meta.board}; class=${meta.className}; stream=${meta.stream||'general'}; subject=${meta.subject}; chapter=${meta.chapter}. Use the supplied live research as evidence. Generate 10 accurate single-answer MCQs for this exact curriculum scope. Return ONLY JSON array with objects {q,options:[4 strings],answer,difficulty}. Do not mention AI or sources in the learner-facing text. Research:\n${sourceText}`;
+      try{ const text=await callAI(provider,cfg[provider],prompt); const raw=text.replace(/^```json|```$/g,'').trim(); const arr=JSON.parse(raw); if(Array.isArray(arr)) generated=arr.filter(x=>x.q&&Array.isArray(x.options)&&x.options.length>=4&&x.answer).slice(0,10); }catch(e){}
+    }
+    const result={sources,generated,meta}; bgChapterCache.set(key,result); return result;
+  })();
+  bgChapterCache.set(key,promise); return promise;
+}
+
+/* ---------- AI Live Study ---------- */
+const AI_CONFIG_KEY='nq_ai_config';
+const AI_CONFIG={openai:{url:'https://api.openai.com/v1/responses',model:'gpt-5.6'},grok:{url:'https://api.x.ai/v1/responses',model:'grok-4'},claude:{url:'https://api.anthropic.com/v1/messages',model:'claude-sonnet-4-6'},gemini:{url:'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro:generateContent',model:'gemini-2.5-pro'},perplexity:{url:'https://api.perplexity.ai/chat/completions',model:'sonar'},deepseek:{url:'https://api.deepseek.com/chat/completions',model:'deepseek-chat'},qwen:{url:'https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions',model:'qwen-plus'},mistral:{url:'https://api.mistral.ai/v1/chat/completions',model:'mistral-small-latest'}};
+function escapeHtml(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+function aiCfg(){try{return JSON.parse(localStorage.getItem(AI_CONFIG_KEY)||'{}')}catch(e){return {}}}
+function populateAISelectors(){const c=document.getElementById('aiClassSelect');if(!c)return;c.innerHTML=Object.keys(CLASS_SUBJECT_DATA).map(x=>`<option>${escapeHtml(x)}</option>`).join('');c.onchange=populateAISubjects;populateAISubjects();}
+function populateAISubjects(){const c=document.getElementById('aiClassSelect'),s=document.getElementById('aiSubjectSelect');if(!c||!s)return;const data=CLASS_SUBJECT_DATA[c.value]||{};s.innerHTML=Object.keys(data).map(x=>`<option>${escapeHtml(x)}</option>`).join('');s.onchange=populateAIChapters;populateAIChapters();}
+function populateAIChapters(){const c=document.getElementById('aiClassSelect'),s=document.getElementById('aiSubjectSelect'),ch=document.getElementById('aiChapterSelect');if(!c||!s||!ch)return;ch.innerHTML=getChapterList(c.value,s.value).map(x=>`<option value="${escapeHtml(x.name)}">${escapeHtml(x.name)}</option>`).join('');}
+function aiSetStatus(t){const e=document.getElementById('aiStatus');if(e)e.textContent=t}
+async function aiLiveSearch(){const c=document.getElementById('aiClassSelect')?.value||'Class 10',s=document.getElementById('aiSubjectSelect')?.value||'General',ch=document.getElementById('aiChapterSelect')?.value||'';const q=encodeURIComponent(`${c} ${s} ${ch} India syllabus chapter notes`),out=document.getElementById('aiResults');aiSetStatus('Searching live educational sources…');out.innerHTML='';try{const r=await fetch(`https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=${q}&gsrnamespace=0&gsrlimit=8&prop=extracts|info&exintro=1&explaintext=1&inprop=url&format=json&origin=*`),d=await r.json(),pages=Object.values(d.query?.pages||{});if(!pages.length){out.innerHTML='<div class="ai-result"><p>No live result found. Try a broader chapter name.</p></div>';aiSetStatus('Search complete');return}out.innerHTML=pages.map(p=>`<div class="ai-result"><h4>${escapeHtml(p.title||'Result')}</h4><p>${escapeHtml((p.extract||'').slice(0,600))}</p><div style="margin-top:6px"><a href="${p.fullurl||'#'}" target="_blank" rel="noopener">Open source ↗</a></div></div>`).join('');aiSetStatus(`Live search complete — ${pages.length} results`)}catch(e){aiSetStatus('Live search failed. Check internet connection.');out.innerHTML='<div class="ai-result"><p>The live request was blocked or the network is unavailable.</p></div>'}}
+async function aiGenerateQuestions(){const provider=document.getElementById('aiProviderSelect')?.value||'openai',cfg=aiCfg(),key=cfg[provider];if(provider==='aifiesta'){aiSetStatus('AI Fiesta has no public API configured in this app. Use the official service or your own supported endpoint.');return}if(!key){aiSetStatus(`Add your ${provider} API key in Settings → AI API Keys first.`);return}const c=document.getElementById('aiClassSelect')?.value||'Class 10',s=document.getElementById('aiSubjectSelect')?.value||'General',ch=document.getElementById('aiChapterSelect')?.value||'',prompt=`Create 10 accurate single-answer MCQs for ${c}, subject ${s}, chapter ${ch}. Return ONLY valid JSON array with objects {q,options:[4 strings],answer}. Do not invent syllabus facts.`;aiSetStatus(`Generating with ${provider}…`);try{const text=await callAI(provider,key,prompt),raw=text.replace(/^```json|```$/g,'').trim(),arr=JSON.parse(raw);if(!Array.isArray(arr))throw new Error('bad');document.getElementById('aiResults').innerHTML=arr.slice(0,10).map((x,i)=>`<div class="ai-result"><h4>Q${i+1}. ${escapeHtml(x.q||'')}</h4><p>${(x.options||[]).map((o,j)=>`${String.fromCharCode(65+j)}. ${escapeHtml(o)}`).join('<br>')}</p></div>`).join('');aiSetStatus(`Generated ${Math.min(10,arr.length)} questions.`)}catch(e){aiSetStatus('AI generation failed. Check API key, provider endpoint and browser CORS.')}}
+async function callAI(provider,key,prompt){const c=AI_CONFIG[provider];if(provider==='claude'){const r=await fetch(c.url,{method:'POST',headers:{'content-type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:c.model,max_tokens:2500,messages:[{role:'user',content:prompt}]})});const d=await r.json();return d.content?.[0]?.text||''}if(provider==='gemini'){const r=await fetch(c.url+`?key=${encodeURIComponent(key)}`,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt}]}]})});const d=await r.json();return d.candidates?.[0]?.content?.parts?.[0]?.text||''}if(provider==='openai'){const r=await fetch(c.url,{method:'POST',headers:{'content-type':'application/json','authorization':`Bearer ${key}`},body:JSON.stringify({model:c.model,input:prompt})});const d=await r.json();return d.output_text||''}const r=await fetch(c.url,{method:'POST',headers:{'content-type':'application/json','authorization':`Bearer ${key}`},body:JSON.stringify({model:c.model,messages:[{role:'user',content:prompt}],temperature:.2})});const d=await r.json();return d.choices?.[0]?.message?.content||''}
+function saveAIKey(){const p=document.getElementById('aiKeyProvider')?.value,k=document.getElementById('aiKeyInput')?.value.trim();if(!p)return;const cfg=aiCfg();if(k)cfg[p]=k;else delete cfg[p];localStorage.setItem(AI_CONFIG_KEY,JSON.stringify(cfg));showToast('AI API key saved on this device')}
+
+/* ---------- Init ---------- */
+const STATE_BOARDS = {
+  "Andhra Pradesh":["Board of Secondary Education, Andhra Pradesh","Board of Intermediate Education, Andhra Pradesh","AP Open School Society","CBSE","CISCE","NIOS"],
+  "Arunachal Pradesh":["Arunachal Pradesh Board of School Education","CBSE","CISCE","NIOS"],
+  "Assam":["Board of Secondary Education, Assam","Assam Higher Secondary Education Council","CBSE","CISCE","NIOS"],
+  "Bihar":["Bihar School Examination Board","Bihar Board of Open Schooling & Examination","Bihar State Madrasa Education Board","Bihar Sanskrit Shiksha Board","CBSE","CISCE","NIOS"],
+  "Chhattisgarh":["Chhattisgarh Board of Secondary Education","Chhattisgarh State Open School","Chhattisgarh Sanskrit Board","Chhattisgarh Madrasa Board","CBSE","CISCE","NIOS"],
+  "Goa":["Goa Board of Secondary & Higher Secondary Education","CBSE","CISCE","NIOS"],
+  "Gujarat":["Gujarat Secondary & Higher Secondary Education Board","CBSE","CISCE","NIOS"],
+  "Haryana":["Board of School Education Haryana","CBSE","CISCE","NIOS"],
+  "Himachal Pradesh":["Himachal Pradesh Board of School Education","Himachal Pradesh State Open School","CBSE","CISCE","NIOS"],
+  "Jharkhand":["Jharkhand Academic Council","CBSE","CISCE","NIOS"],
+  "Karnataka":["Karnataka School Examination and Assessment Board","Department of Pre-University Education, Karnataka","CBSE","CISCE","NIOS"],
+  "Kerala":["Kerala Board of Public Examinations","Kerala Board of Higher Secondary Education","Board of Vocational Higher Secondary Education, Kerala","CBSE","CISCE","NIOS"],
+  "Madhya Pradesh":["Board of Secondary Education, Madhya Pradesh","M.P. State Open School Education Board","CBSE","CISCE","NIOS"],
+  "Maharashtra":["Maharashtra State Board of Secondary and Higher Secondary Education","Maharashtra State Open School","CBSE","CISCE","NIOS"],
+  "Manipur":["Board of Secondary Education, Manipur","Council of Higher Secondary Education, Manipur","CBSE","CISCE","NIOS"],
+  "Meghalaya":["Meghalaya Board of School Education","CBSE","CISCE","NIOS"],
+  "Mizoram":["Mizoram Board of School Education","CBSE","CISCE","NIOS"],
+  "Nagaland":["Nagaland Board of School Education","CBSE","CISCE","NIOS"],
+  "Odisha":["Board of Secondary Education, Odisha","Council of Higher Secondary Education, Odisha","Odisha State Board of Madrasa Education","CBSE","CISCE","NIOS"],
+  "Punjab":["Punjab School Education Board","CBSE","CISCE","NIOS"],
+  "Rajasthan":["Board of Secondary Education, Rajasthan","Rajasthan State Open School","CBSE","CISCE","NIOS"],
+  "Sikkim":["Board of Open Schooling and Skill Education (BOSSE)","CBSE","CISCE","NIOS"],
+  "Tamil Nadu":["Tamil Nadu State Board / State Common Board of School Education","CBSE","CISCE","NIOS"],
+  "Telangana":["Board of Secondary Education, Telangana","Telangana State Board of Intermediate Education","Telangana Open School Society","CBSE","CISCE","NIOS"],
+  "Tripura":["Tripura Board of Secondary Education","CBSE","CISCE","NIOS"],
+  "Uttar Pradesh":["U.P. Board of High School & Intermediate Education","U.P. Board of Secondary Sanskrit Education","U.P. Board of Madarsa Education","Uttar Pradesh State Open School","CBSE","CISCE","NIOS"],
+  "Uttarakhand":["Board of School Education Uttarakhand","Uttarakhand Sanskrit Shiksha Parishad","Uttarakhand Madrasa Education Board","CBSE","CISCE","NIOS"],
+  "West Bengal":["West Bengal Board of Secondary Education (WBBSE)","West Bengal Council of Higher Secondary Education (WBCHSE)","West Bengal Board of Madrasah Education","West Bengal Council of Rabindra Open Schooling","West Bengal State Council of Technical & Vocational Education & Skill Development","CBSE","CISCE","NIOS"],
+  "Andaman and Nicobar Islands":["CBSE","CISCE","NIOS"],"Chandigarh":["CBSE","CISCE","NIOS"],"Dadra and Nagar Haveli and Daman and Diu":["Gujarat Board","CBSE","CISCE","NIOS"],"Delhi":["CBSE","CISCE","Delhi Board of School Education","NIOS"],"Jammu and Kashmir":["Jammu & Kashmir Board of School Education","J&K State Open School","CBSE","CISCE","NIOS"],"Ladakh":["Jammu & Kashmir Board of School Education","CBSE","CISCE","NIOS"],"Lakshadweep":["CBSE","CISCE","NIOS"],"Puducherry":["Tamil Nadu State Board","CBSE","CISCE","NIOS"]
+};
+function initProfileForm() {
+  const classSel=document.getElementById('profClass'), stateSel=document.getElementById('profState');
+  classSel.innerHTML=Object.keys(CLASS_SUBJECT_DATA).map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+  stateSel.innerHTML=Object.keys(STATE_BOARDS).map(st=>`<option value="${escapeHtml(st)}">${escapeHtml(st)}</option>`).join('');
+  populateProfileBoards(); populateProfileStream();
+}
+function populateProfileBoards(){const st=document.getElementById('profState')?.value, b=document.getElementById('profBoard'); if(!b)return; const arr=STATE_BOARDS[st]||['CBSE','CISCE','NIOS']; b.innerHTML=arr.map(x=>`<option value="${escapeHtml(x)}">${escapeHtml(x)}</option>`).join(''); if(profile.board && arr.includes(profile.board)) b.value=profile.board;}
+function populateProfileStream(){const cls=document.getElementById('profClass')?.value||'', w=document.getElementById('profStreamWrap'); if(w) w.style.display=(cls==='Class 11'||cls==='Class 12')?'block':'none';}
 function saveProfile() {
-  profile.name = document.getElementById('profName').value.trim() || 'Learner';
-  profile.cls = document.getElementById('profClass').value || Object.keys(CLASS_SUBJECT_DATA)[0];
-  profile.state = document.getElementById('profState').value || Object.keys(STATE_DATA)[0];
-  saveProfileData();
-  renderProfileBadge();
-  renderXPBar();
-  checkDailyBanner();
-  goTo('homeScreen');
-  playClick();
+  profile.name=document.getElementById('profName').value.trim()||'Learner'; profile.cls=document.getElementById('profClass').value||'Class 10'; profile.state=document.getElementById('profState').value||'West Bengal'; profile.board=document.getElementById('profBoard').value||'CBSE'; profile.stream=document.getElementById('profStream').value||''; saveProfileData(); renderProfileBadge(); checkDailyBanner(); goTo('homeScreen');
 }
 function editProfile() {
-  document.getElementById('profName').value = profile.name === 'Learner' ? '' : profile.name;
-  const cls = document.getElementById('profClass');
-  const state = document.getElementById('profState');
-  cls.value = profile.cls && [...cls.options].some(o => o.value === profile.cls) ? profile.cls : cls.options[0]?.value || '';
-  state.value = profile.state && [...state.options].some(o => o.value === profile.state) ? profile.state : state.options[0]?.value || '';
-  const cp=document.getElementById('profileClassPreview');
-  const sp=document.getElementById('profileStatePreview');
-  if(cp) cp.textContent=cls.value || 'Not selected';
-  if(sp) sp.textContent=state.value || 'Not selected';
-  goTo('profileScreen');
+  document.getElementById('profName').value=profile.name==='Learner'?'':profile.name||'';
+  const cls=document.getElementById('profClass'), st=document.getElementById('profState'); cls.value=profile.cls&&[...cls.options].some(o=>o.value===profile.cls)?profile.cls:cls.options[0]?.value||''; st.value=profile.state&&[...st.options].some(o=>o.value===profile.state)?profile.state:st.options[0]?.value||''; populateProfileBoards(); populateProfileStream(); const b=document.getElementById('profBoard'); if(profile.board&&[...b.options].some(o=>o.value===profile.board)) b.value=profile.board; const stream=document.getElementById('profStream'); if(stream&&profile.stream)stream.value=profile.stream; goTo('profileScreen');
 }
-function renderProfileBadge() {
-  const initial = (profile.name || 'L').charAt(0).toUpperCase();
-  const action = document.getElementById('profileActionBtn');
-  if (action) action.textContent = profile.name ? '👤 Edit Profile' : '👤 Create Profile';
-  document.getElementById('profileBadge').innerHTML = `
-    <div class="profile-avatar">${initial}<div class="level-dot">${profile.level}</div></div>
-    <div>
-      <div class="who">👋 ${profile.name}</div>
-      <div class="meta">${profile.cls} · ${profile.state}</div>
-    </div>
-    <button class="editlink" onclick="editProfile()">Edit</button>`;
-}
-function openClassMode() {
-  buildClassGrid();
-  goTo('classPickScreen');
-}
-function setDifficulty(d) {
-  currentDifficulty = d;
-  document.querySelectorAll('.diff-pill').forEach(p => p.classList.toggle('active', p.dataset.diff === d));
-  buildSubjectGrid();
-}
+function renderProfileBadge() { return; }
+function openClassMode(){ buildClassGrid(); goTo('classPickScreen'); }
+function setDifficulty(d){ currentDifficulty=d; document.querySelectorAll('.diff-pill').forEach(p=>p.classList.toggle('active',p.dataset.diff===d)); buildSubjectGrid(); }
 
 /* ---------- Navigation ---------- */
 function goTo(id) {
@@ -1680,7 +1783,7 @@ function goTo(id) {
   }
   if (id === 'achievementsScreen') renderAchievements();
   if (id === 'leaderboardScreen') renderLeaderboard();
-  if (id === 'homeScreen') { renderProfileBadge(); renderXPBar(); renderScoreboard(); checkDailyBanner(); }
+  if (id === 'homeScreen') { renderProfileBadge(); renderScoreboard(); checkDailyBanner(); }
   playClick();
   return true;
 }
@@ -1695,15 +1798,30 @@ function buildClassGrid() {
     grid.appendChild(b);
   });
 }
+const STANDARD_SUBJECTS = {
+  primary:['English','Hindi','Mathematics','Environmental Studies','General Knowledge','Computer Studies','Art Education'],
+  middle:['English','Hindi','Mathematics','Science','Social Science','Computer Science','Sanskrit','General Knowledge'],
+  secondary:['English','Hindi','Mathematics','Science','Social Science','Computer Science','Sanskrit','Physical Education'],
+};
+const STREAM_SUBJECTS = {
+  Arts:['English','Bengali / Regional Language','History','Political Science','Geography','Economics','Sociology','Philosophy','Psychology','Education','Fine Arts','Computer Science','Physical Education'],
+  Science:['English','Physics','Chemistry','Mathematics','Biology','Computer Science','Information Practices','Physical Education','Environmental Science','Statistics'],
+  Commerce:['English','Accountancy','Business Studies','Economics','Mathematics','Applied Mathematics','Entrepreneurship','Computer Science','Informatics Practices','Physical Education','Statistics'],
+  Vocational:['English','Mathematics','Physics','Chemistry','Vocational / Trade Subject','Computer Science','Entrepreneurship','Physical Education']
+};
 function buildSubjectGrid() {
-  if (!selectedClass || !CLASS_SUBJECT_DATA[selectedClass]) return;
-  document.getElementById('subjectSubLabel').textContent = `${selectedClass} — choose a subject`;
-  const grid = document.getElementById('subjectGrid'); grid.innerHTML = '';
-  Object.keys(CLASS_SUBJECT_DATA[selectedClass]).forEach(subj => {
-    const b = document.createElement('button'); b.className = 'choice'; b.textContent = subj;
-    b.onclick = () => { buildChapterGrid(subj); goTo('chapterPickScreen'); };
-    grid.appendChild(b);
-  });
+  if (!selectedClass) return;
+  const label=document.getElementById('subjectSubLabel');
+  const stream=(selectedClass==='Class 11'||selectedClass==='Class 12')?(profile.stream||'Arts'):'';
+  if(label) label.textContent=`${profile.state||'India'} · ${profile.board||'CBSE'} · ${selectedClass}${stream?' · '+stream:''} — choose a subject`;
+  const grid=document.getElementById('subjectGrid'); if(!grid)return; grid.innerHTML='';
+  const existing=Object.keys(CLASS_SUBJECT_DATA[selectedClass]||{});
+  let subjects=existing;
+  if(selectedClass==='Class 11'||selectedClass==='Class 12') subjects=[...new Set([...existing,...(STREAM_SUBJECTS[stream]||STREAM_SUBJECTS.Arts)])];
+  else if(['Class 1','Class 2','Class 3','Class 4','Class 5'].includes(selectedClass)) subjects=[...new Set([...existing,...STANDARD_SUBJECTS.primary])];
+  else if(['Class 6','Class 7','Class 8'].includes(selectedClass)) subjects=[...new Set([...existing,...STANDARD_SUBJECTS.middle])];
+  else subjects=[...new Set([...existing,...STANDARD_SUBJECTS.secondary])];
+  subjects.forEach(subj=>{const b=document.createElement('button'); b.className='choice'; b.textContent=subj; b.onclick=async()=>{buildChapterGrid(subj);goTo('chapterPickScreen'); const chapters=await backgroundSyllabusChapters({state:profile.state||'India',board:profile.board||'CBSE',className:selectedClass,stream:profile.stream||'',subject:subj}); if(chapters?.length){const grid=document.getElementById('chapterGrid'); grid.innerHTML=''; chapters.forEach(ch=>{const b=document.createElement('button'); b.className='choice'; b.textContent=ch.name; b.onclick=()=>{let qs=(ch.questions||[]).slice(); const tag=`${profile.state||'India'} · ${profile.board||'CBSE'} · ${selectedClass}${profile.stream?' · '+profile.stream:''} · ${subj} · ${ch.name}`; startQuiz(qs.length?qs:[{q:'Preparing live questions…',options:['Please wait','Please wait','Please wait','Please wait'],answer:'Please wait',hint:'The background curriculum assistant is preparing this chapter.'}],tag,'mcq'); backgroundChapterAI({state:profile.state,board:profile.board,className:selectedClass,stream:profile.stream,subject:subj,chapter:ch.name,baseQuestions:qs});}; grid.appendChild(b);});}}; grid.appendChild(b);});
 }
 function buildChapterGrid(subject) {
   window.selectedSubject = subject;
@@ -1715,7 +1833,19 @@ function buildChapterGrid(subject) {
     b.onclick = () => {
       let qs = ch.questions.slice();
       if (currentDifficulty !== 'all') { const f=qs.filter(q=>q.difficulty===currentDifficulty); if(f.length) qs=f; }
-      startQuiz(qs, `${selectedClass} · ${subject} · ${ch.name}`, 'mcq');
+      const meta={state:profile.state||'India',board:profile.board||'CBSE',className:selectedClass,stream:profile.stream||'',subject,chapter:ch.name,baseQuestions:qs};
+      const tag = `${meta.state} · ${meta.board} · ${selectedClass}${meta.stream?' · '+meta.stream:''} · ${subject} · ${ch.name}`;
+      startQuiz(qs, tag, 'mcq');
+      backgroundChapterAI(meta).then(r=>{
+        if(!r?.generated?.length || !quizState?.questions || quizState.idx!==0) return;
+        const normalized=r.generated.map(x=>({q:x.q,options:x.options.slice(0,4),answer:x.answer,hint:x.hint||'Read the question carefully and compare all four options.',difficulty:x.difficulty||'medium'})).filter(x=>x.options.length===4&&x.options.includes(x.answer));
+        if(!normalized.length) return;
+        const current=quizState.questions[0];
+        const placeholder=current?.q==='Preparing live questions…';
+        quizState.questions=[...(placeholder?[]:[current]),...fisherYates(normalized)].slice(0,settings.qCount);
+        if(!quizState.questions.length) return;
+        document.getElementById('progNum').textContent=`1/${quizState.questions.length}`;
+      });
     };
     grid.appendChild(b);
   });
@@ -1758,7 +1888,7 @@ function startQuiz(questions, tag, mode = 'mcq', timerOverride = null) {
   qs = qs.slice(0, count);
   quizState = {
     questions: qs, idx: 0, score: 0, tag, answered: false,
-    timer: null, timerOverride: timerOverride, maskUsed: false, skipUsed: false, hintUsed: false,
+    timer: null, timerOverride: timerOverride, 
     streak: 0, maxStreak: 0, mode, startTime: Date.now(), times: [], review: []
   };
   goTo('quizScreen');
@@ -1804,12 +1934,9 @@ function retryQuiz() {
 }
 function renderQuestion() {
   quizState.answered = false;
-  quizState.maskUsed = false;
+  const nextBtn = document.getElementById('nextQuestionBtn');
+  if (nextBtn) { nextBtn.disabled = true; nextBtn.textContent = 'Next Question →'; }
   quizState.hintUsed = false;
-  document.getElementById('maskBtn').disabled = false;
-  document.getElementById('skipBtn').disabled = quizState.skipUsed;
-  document.getElementById('hintBtn').disabled = false;
-  document.getElementById('hintText').style.display = 'none';
   const total = quizState.questions.length;
   const cur = quizState.questions[quizState.idx];
   if (!cur) { showResult(); return; }
@@ -1848,63 +1975,38 @@ function renderQuestion() {
   startTimer(cur.answer);
 }
 function startTimer(correctAnswer) {
-  clearInterval(quizState.timer);
+  if (quizState.timer) clearInterval(quizState.timer);
   const fill = document.getElementById('timerFill');
   fill.classList.remove('urgent');
-  let elapsed = 0;
-  const totalTime = Math.max(1, Number(quizState.timerOverride ?? settings.timer) || 15) * 1000;
-  const step = 100;
+  const totalSeconds = Math.max(1, Number(quizState.timerOverride ?? settings.timer) || 15);
+  const totalMs = totalSeconds * 1000;
+  const startedAt = Date.now();
+  quizState.timerEndAt = startedAt + totalMs;
   fill.style.transition = 'none';
   fill.style.width = '100%';
-  quizState.timer = setInterval(() => {
-    elapsed += step;
-    const pct = Math.max(0, 100 - (elapsed / totalTime) * 100);
-    fill.style.transition = `width ${step}ms linear`;
+
+  function tick() {
+    if (quizState.answered) return;
+    const left = Math.max(0, quizState.timerEndAt - Date.now());
+    const pct = Math.max(0, Math.min(100, (left / totalMs) * 100));
     fill.style.width = pct + '%';
     if (pct <= 30) fill.classList.add('urgent');
-    if (elapsed >= totalTime) {
+    if (left <= 0) {
       clearInterval(quizState.timer);
-      if (!quizState.answered) selectAnswer(null, null, correctAnswer);
+      quizState.timer = null;
+      if (!quizState.answered) selectAnswer(null, null, correctAnswer, true);
     }
-  }, step);
-}
-function useMask() {
-  if (quizState.maskUsed || quizState.answered || quizState.mode === 'tf') return;
-  quizState.maskUsed = true;
-  document.getElementById('maskBtn').disabled = true;
-  const cur = quizState.questions[quizState.idx];
-  const wrong = [...document.querySelectorAll('.opt')].filter(b => b.textContent !== cur.answer && !b.classList.contains('masked'));
-  if (wrong.length) {
-    const pick = wrong[Math.floor(Math.random() * wrong.length)];
-    pick.classList.add('masked');
   }
-  playClick();
+  tick();
+  quizState.timer = setInterval(tick, 100);
 }
-function useSkip() {
-  if (quizState.skipUsed || quizState.answered) return;
-  quizState.skipUsed = true;
-  document.getElementById('skipBtn').disabled = true;
-  clearInterval(quizState.timer);
-  quizState.answered = true;
-  quizState.idx++;
-  if (quizState.idx >= quizState.questions.length) showResult();
-  else renderQuestion();
-  playClick();
-}
-function useHint() {
-  if (quizState.hintUsed || quizState.answered) return;
-  quizState.hintUsed = true;
-  document.getElementById('hintBtn').disabled = true;
-  const cur = quizState.questions[quizState.idx];
-  const hintEl = document.getElementById('hintText');
-  hintEl.textContent = cur.hint ? `💡 ${cur.hint}` : `💡 Think carefully about the key concept.`;
-  hintEl.style.display = 'block';
-  playClick();
-}
-function selectAnswer(chosen, btn, correctAnswer) {
+
+function selectAnswer(chosen, btn, correctAnswer, timedOut = false) {
   if (quizState.answered) return;
   quizState.answered = true;
   clearInterval(quizState.timer);
+  const nextBtn = document.getElementById('nextQuestionBtn');
+  if (nextBtn) { nextBtn.disabled = false; nextBtn.textContent = quizState.idx >= quizState.questions.length - 1 ? 'See Result →' : 'Next Question →'; }
   document.getElementById('maskBtn').disabled = true;
   document.getElementById('hintBtn').disabled = true;
   const timeTaken = (Date.now() - quizState.qStart) / 1000;
@@ -1937,17 +2039,17 @@ function selectAnswer(chosen, btn, correctAnswer) {
     quizState.maxStreak = Math.max(quizState.maxStreak, quizState.streak);
     playCorrect();
     burstFlash();
-    if (settings.vibrate && navigator.vibrate) /* vibration removed */ (40);
   } else {
     quizState.streak = 0;
     playWrong();
-    if (settings.vibrate && navigator.vibrate) /* vibration removed */ ([30, 40, 30]);
   }
-  setTimeout(() => {
-    quizState.idx++;
-    if (quizState.idx >= quizState.questions.length) showResult();
-    else renderQuestion();
-  }, 850);
+}
+function nextQuestion() {
+  if (!quizState || !quizState.questions || !quizState.answered) return;
+  clearInterval(quizState.timer);
+  quizState.idx++;
+  if (quizState.idx >= quizState.questions.length) showResult();
+  else renderQuestion();
 }
 function showResult() {
   clearInterval(quizState.timer);
@@ -1955,10 +2057,6 @@ function showResult() {
   if (!total) { showToast('No questions available'); goTo('homeScreen'); return; }
   const pct = Math.round((quizState.score / total) * 100);
   const avgTime = quizState.times.length ? (quizState.times.reduce((a, b) => a + b, 0) / quizState.times.length).toFixed(1) : 0;
-  let xpGain = quizState.score * 10 + (pct === 100 ? 50 : 0) + Math.min(quizState.maxStreak * 5, 30);
-  if (quizState.tag.includes('Daily')) xpGain += 40;
-  if (quizState.tag.includes('Speed')) xpGain += 25;
-  addXP(xpGain);
   profile.totalQuizzes++;
   profile.totalCorrect += quizState.score;
   profile.totalQuestions += total;
@@ -1980,7 +2078,6 @@ function showResult() {
   document.getElementById('resultMsg').textContent = pct === 100 ? 'Perfect! 🎯' : pct >= 80 ? 'Excellent! 🔥' : pct >= 50 ? 'Good effort 👍' : 'Keep practicing 💪';
   document.getElementById('resultStreak').textContent = `🔥 Best streak: ${quizState.maxStreak}`;
   document.getElementById('rsAccuracy').textContent = pct + '%';
-  document.getElementById('rsXP').textContent = '+' + xpGain;
   document.getElementById('rsTime').textContent = avgTime + 's';
   const review = document.getElementById('reviewList');
   review.innerHTML = quizState.review.map(r => `
@@ -2011,13 +2108,12 @@ function renderScoreboard() {
     <button class="lifeline-btn" style="margin-top:10px;width:100%;text-align:center;" onclick="retryQuiz()">🔁 Play Last Again</button>`;
 }
 function resetProgress() {
-  if (confirm('Reset all XP, achievements and stats? This cannot be undone.')) {
-    profile.xp = 0; profile.level = 1; profile.totalQuizzes = 0;
+  if (confirm('Reset all achievements and stats? This cannot be undone.')) {
+    profile.totalQuizzes = 0;
     profile.totalCorrect = 0; profile.totalQuestions = 0; profile.bestStreak = 0;
     profile.achievements = []; profile.statesPlayed = []; profile.gkCorrect = 0;
     saveProfileData();
-    renderXPBar();
-    renderProfileBadge();
+      renderProfileBadge();
     showToast('Progress reset');
   }
 }
@@ -2030,7 +2126,6 @@ function bootApp() {
   buildClassGrid();
   buildStateGrid();
   renderProfileBadge();
-  renderXPBar();
   checkDailyBanner();
   goTo('homeScreen');
 }
@@ -2039,8 +2134,16 @@ else bootApp();
 </script>
 
 
-
-
-</body>
+<script>
+document.addEventListener('click',function(e){
+ const el=e.target.closest('button,.option,.answer-option,.quiz-option');
+ if(!el) return;
+ setTimeout(function(){
+   const txt=(el.textContent||'').toLowerCase();
+   if(el.dataset.correct==='true' || el.classList.contains('correct') || el.getAttribute('aria-correct')==='true'){el.classList.add('correct')}
+   if(el.dataset.correct==='false' || el.classList.contains('wrong') || el.getAttribute('aria-correct')==='false'){el.classList.add('wrong')}
+ },20);
+});
+</script>
+<script>document.addEventListener("visibilitychange",function(){if(!document.hidden&&typeof window.syncQuizTimer==="function")window.syncQuizTimer();});</script></body>
 </html>
-
