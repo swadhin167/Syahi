@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Neuron Quiz Pro — Master India & Beyond</title>
+<title>Quiz Programs — Master India & Beyond</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -361,7 +361,7 @@ h1 {
 .auto-back { display:flex !important; align-items:center; gap:7px; width:max-content; padding:8px 12px !important; margin:0 0 10px 0 !important; border-radius:10px !important; background:rgba(255,255,255,.06) !important; color:var(--text) !important; border:1px solid rgba(255,255,255,.10) !important; }
 .auto-back:hover { background:rgba(124,92,252,.18) !important; color:#fff !important; }
 @media(max-width:420px){ #homeScreen .home-actions{grid-template-columns:1fr;} }
-/* ===== Neuron Quiz Pro unified option theme ===== */
+/* ===== Quiz Programs unified option theme ===== */
 .opt.color-0,.opt.color-1,.opt.color-2,.opt.color-3 {
   background: linear-gradient(135deg, rgba(124,92,252,.22), rgba(76,224,210,.14)) !important;
   border: 1px solid rgba(124,92,252,.32);
@@ -501,13 +501,51 @@ img,svg,canvas,video{max-width:100%!important;height:auto!important}
   };
 })();
 </script>
+
+<style id="v12-home-style">
+/* Quiz Programs compact home */
+.home-screen, .home-grid, .home-card-grid { gap: 14px !important; }
+.home-card { margin-bottom: 4px !important; }
+.gk-marathon, .marathon-card { min-height: 150px !important; height: 150px !important; }
+.bottom-nav, .bottom-navigation { height: 72px !important; min-height: 72px !important; padding: 8px 4px !important; }
+.bottom-nav button, .bottom-navigation button, .nav-item { min-height: 56px !important; padding: 8px 10px !important; font-size: 13px !important; }
+</style>
+
+<style id="v13-home-layout">
+/* v13: stable mobile home layout */
+body{display:block!important;align-items:initial!important;justify-content:initial!important;overflow:hidden!important}
+.wrap{width:100%!important;max-width:100%!important;padding:0!important}
+.card{width:100%!important;max-width:100%!important;max-height:none!important;min-height:100dvh!important;overflow:hidden!important;border:0!important;border-radius:0!important;padding:14px 12px 88px!important;background:rgba(11,15,25,.96)!important;box-shadow:none!important;backdrop-filter:none!important}
+.card>h1{font-size:1.25rem!important;margin:2px 0 2px!important}
+.card>.sub{font-size:.7rem!important;margin:0 0 12px!important}
+#achievementsScreen{display:none!important}
+#homeScreen{height:calc(100dvh - 64px)!important;min-height:0!important;overflow:hidden!important;padding:4px 2px 0!important}
+#homeScreen .modegrid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:16px!important;align-items:stretch!important}
+#homeScreen .modecard{width:100%!important;min-width:0!important;min-height:106px!important;height:106px!important;padding:13px 10px!important;border-radius:14px!important;display:flex!important;align-items:center!important;gap:8px!important;overflow:hidden!important}
+#homeScreen .modecard .icon{font-size:1.35rem!important;flex:0 0 auto!important}
+#homeScreen .modecard .ttl{font-size:.82rem!important;line-height:1.15!important;white-space:normal!important}
+#homeScreen .modecard .dsc{font-size:.62rem!important;line-height:1.25!important;margin-top:4px!important}
+#homeScreen .modecard.mode-c{grid-column:1 / -1!important;height:150px!important;min-height:150px!important}
+#homeScreen .modecard.mode-c .icon{font-size:1.8rem!important}
+.home-stats{display:grid!important;grid-template-columns:1fr 1fr!important;gap:16px!important;margin:0 0 18px!important}
+.home-stat-card{height:74px!important;min-width:0!important;padding:10px 12px!important;border-radius:13px!important;border:1px solid rgba(255,255,255,.10)!important;background:linear-gradient(135deg,rgba(124,92,252,.18),rgba(76,224,210,.08))!important;overflow:hidden!important}
+.home-stat-card.incomplete-quiz{cursor:pointer!important}
+.home-stat-card .stat-label{font-size:.62rem!important;color:var(--muted)!important;text-transform:uppercase!important;letter-spacing:.05em!important}
+.home-stat-card .stat-value{font-family:'Sora',sans-serif!important;font-weight:800!important;font-size:1.15rem!important;line-height:1.15!important;margin-top:2px!important}
+.home-stat-card .stat-sub{font-size:.58rem!important;color:var(--muted)!important;margin-top:2px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+.bottom-nav{position:fixed!important;left:0!important;right:0!important;bottom:0!important;width:100%!important;height:76px!important;min-height:76px!important;z-index:999!important;margin:0!important;padding:7px 6px!important;display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:5px!important;border-radius:0!important;background:rgba(8,12,22,.98)!important;border-top:1px solid rgba(124,92,252,.32)!important;box-shadow:0 -8px 22px rgba(0,0,0,.28)!important}
+.bottom-nav-btn{height:62px!important;min-height:62px!important;width:100%!important;padding:7px 2px!important;border-radius:12px!important}
+.bottom-nav-btn span{font-size:1.15rem!important}
+.bottom-nav-btn small{font-size:.62rem!important;margin-top:3px!important}
+@media(max-width:380px){#homeScreen .modegrid,.home-stats{gap:12px!important}#homeScreen .modecard{min-height:98px!important;height:98px!important}#homeScreen .modecard.mode-c{height:140px!important;min-height:140px!important}.bottom-nav{height:72px!important;min-height:72px!important}.bottom-nav-btn{height:58px!important;min-height:58px!important}.bottom-nav-btn span{font-size:1.05rem!important}.bottom-nav-btn small{font-size:.56rem!important}}
+</style>
 </head>
 <body>
 <canvas id="net"></canvas>
 <canvas id="confetti"></canvas>
 <div class="wrap">
   <div class="card">
-    <h1>Neuron Quiz Pro</h1>
+    <h1>Quiz Programs</h1>
     <div class="sub">Master India • Science • World • Yourself</div>
 
     <!-- ==================== PROFILE SETUP ==================== -->
@@ -543,7 +581,10 @@ img,svg,canvas,video{max-width:100%!important;height:auto!important}
         <div class="db-sub">Complete today's special quiz</div>
         <button class="btn-primary" style="margin-top:10px;padding:10px;" onclick="startDailyChallenge()">Play Daily Challenge</button>
       </div>
-      <div class="scoreboard" id="scoreboard" style="display:none;"></div>
+      <div class="home-stats" id="homeStats">
+        <div class="home-stat-card quick-score"><div class="stat-label">Quick Score</div><div class="stat-value" id="quickScoreValue">0%</div><div class="stat-sub" id="quickScoreSub">Start a quiz</div></div>
+        <div class="home-stat-card incomplete-quiz" onclick="retryQuiz()"><div class="stat-label">Incomplete Quiz</div><div class="stat-value" id="incompleteValue">0</div><div class="stat-sub" id="incompleteSub">No unfinished quiz</div></div>
+      </div>
       <div class="modegrid">
         <button class="modecard mode-a" onclick="openClassMode()"><div class="icon">🎓</div><div><div class="ttl">Class & Subject Quiz</div><div class="dsc">Curriculum based • Class 1 to 12</div></div></button>
         <button class="modecard mode-b" onclick="goTo('statePickScreen')"><div class="icon">🗺️</div><div><div class="ttl">State GK Challenge</div><div class="dsc">All 28 states + 8 UTs covered</div></div></button>
@@ -554,7 +595,6 @@ img,svg,canvas,video{max-width:100%!important;height:auto!important}
       <nav class="bottom-nav" aria-label="Main navigation">
         <button class="bottom-nav-btn active" onclick="goTo('homeScreen')"><span>⌂</span><small>Home</small></button>
         <button class="bottom-nav-btn" onclick="goTo('leaderboardScreen')"><span>🏆</span><small>Leaderboard</small></button>
-        <button class="bottom-nav-btn" onclick="goTo('achievementsScreen')"><span>🏅</span><small>Achievement</small></button>
         <button class="bottom-nav-btn" onclick="goTo('settingsScreen')"><span>⚙</span><small>Setting</small></button>
         <button class="bottom-nav-btn" onclick="editProfile()"><span>👤</span><small>Profile</small></button>
       </nav>
@@ -2088,23 +2128,25 @@ function showResult() {
   goTo('resultScreen');
 }
 function renderScoreboard() {
-  const box = document.getElementById('scoreboard');
-  if (!sessionStats.lastQuiz) { box.style.display = 'none'; return; }
-  box.style.display = 'block';
-  const lq = sessionStats.lastQuiz;
-  const pct = Math.round((lq.score / lq.total) * 100);
-  let msg = pct === 100 ? 'Perfect score! 🎯' : pct >= 80 ? 'Excellent! 🔥' : pct >= 50 ? 'Good effort 👍' : 'Keep practicing 💪';
-  box.innerHTML = `
-    <div class="sb-top">
-      <div><div class="sb-title">Last: ${lq.tag}</div><div class="sb-tag">${msg}</div></div>
-    </div>
-    <div class="sb-row">
-      <div><div class="n">${lq.score}/${lq.total}</div><div class="l">Last</div></div>
-      <div><div class="n">${sessionStats.totalScore}/${sessionStats.totalQuestions}</div><div class="l">Total</div></div>
-      <div><div class="n">${sessionStats.quizzesPlayed}</div><div class="l">Quizzes</div></div>
-    </div>
-    <button class="lifeline-btn" style="margin-top:10px;width:100%;text-align:center;" onclick="retryQuiz()">🔁 Play Last Again</button>`;
+  const qv = document.getElementById('quickScoreValue');
+  const qs = document.getElementById('quickScoreSub');
+  const iv = document.getElementById('incompleteValue');
+  const is = document.getElementById('incompleteSub');
+  if (!qv) return;
+  if (sessionStats.lastQuiz) {
+    const lq = sessionStats.lastQuiz;
+    const pct = lq.total ? Math.round((lq.score / lq.total) * 100) : 0;
+    qv.textContent = pct + '%';
+    qs.textContent = `${lq.score}/${lq.total} • Last quiz`;
+  } else {
+    qv.textContent = '0%';
+    qs.textContent = 'Start a quiz';
+  }
+  const unfinished = (quizState && quizState.questions && quizState.questions.length && !quizState.finished) ? 1 : 0;
+  iv.textContent = unfinished;
+  is.textContent = unfinished ? 'Continue quiz' : 'No unfinished quiz';
 }
+
 function resetProgress() {
   if (confirm('Reset all achievements and stats? This cannot be undone.')) {
     profile.totalQuizzes = 0;
