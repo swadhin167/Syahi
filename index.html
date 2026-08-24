@@ -2007,8 +2007,6 @@ function selectAnswer(chosen, btn, correctAnswer, timedOut = false) {
   clearInterval(quizState.timer);
   const nextBtn = document.getElementById('nextQuestionBtn');
   if (nextBtn) { nextBtn.disabled = false; nextBtn.textContent = quizState.idx >= quizState.questions.length - 1 ? 'See Result →' : 'Next Question →'; }
-  document.getElementById('maskBtn').disabled = true;
-  document.getElementById('hintBtn').disabled = true;
   const timeTaken = (Date.now() - quizState.qStart) / 1000;
   quizState.times.push(timeTaken);
   const isCorrect = chosen === correctAnswer;
