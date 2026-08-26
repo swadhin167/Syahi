@@ -284,7 +284,6 @@ h1 {
 .lb-name { flex: 1; font-weight: 600; }
 .lb-score { font-family: 'Sora', sans-serif; font-weight: 700; color: var(--cyan); }
 
-/* Daily Challenge Banner */
 .daily-banner {
   background: linear-gradient(135deg, rgba(124,92,252,0.2), rgba(76,224,210,0.15));
   border: 1px solid rgba(124,92,252,0.35);
@@ -578,11 +577,6 @@ body{display:block!important;align-items:initial!important;justify-content:initi
 
     <!-- ==================== HOME ==================== -->
     <div id="homeScreen" class="screen active">
-      <div id="dailyBanner" class="daily-banner" style="display:none;">
-        <div class="db-title">🔥 Daily Challenge Available!</div>
-        <div class="db-sub">Complete today's special quiz</div>
-        <button class="btn-primary" style="margin-top:10px;padding:10px;" onclick="startDailyChallenge()">Play Daily Challenge</button>
-      </div>
       <div class="home-stats" id="homeStats">
         <div class="home-stat-card quick-score"><div class="stat-label">Quick Score</div><div class="stat-value" id="quickScoreValue">0%</div><div class="stat-sub" id="quickScoreSub">Start a quiz</div></div>
         <div class="home-stat-card incomplete-quiz" onclick="retryQuiz()"><div class="stat-label">Incomplete Quiz</div><div class="stat-value" id="incompleteValue">0</div><div class="stat-sub" id="incompleteSub">No unfinished quiz</div></div>
@@ -725,12 +719,7 @@ body{display:block!important;align-items:initial!important;justify-content:initi
       </div>
       <div class="setting-row">
         <div><div class="setting-label">Questions per Quiz</div><div class="setting-desc">How many questions in a round</div></div>
-        <select id="qCountSelect" onchange="updateQCountSetting()" style="width:80px;padding:6px 8px;border-radius:8px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--text);">
-          <option value="5">5</option>
-          <option value="8">8</option>
-          <option value="10" selected>10</option>
-          <option value="15">15</option>
-        </select>
+        <select id="qCountSelect" onchange="updateQCountSetting()" style="width:80px;padding:6px 8px;border-radius:8px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--text);"><option value="100" selected>100</option></select>
       </div>
       <div class="setting-row" style="display:block;">
         <div><div class="setting-label">AI GK Marathon Bank</div><div class="setting-desc">Local AI engine app ke andar chalega. Kisi API key ki zarurat nahi.</div></div>
@@ -880,7 +869,7 @@ function playWrong() { playTone(220, 0.25, 'sawtooth', 0.08); }
 function playClick() { playTone(600, 0.05, 'sine', 0.06); }
 
 /* ---------- Settings & Persistence ---------- */
-let settings = { sound: true, vibrate: false, timer: 15, qCount: 10 };
+let settings = { sound: true, vibrate: false, timer: 15, qCount: 100 };
 function loadSettings() {
   try {
     const s = JSON.parse(localStorage.getItem('nq_settings') || '{}');
@@ -889,7 +878,7 @@ function loadSettings() {
   settings.sound = settings.sound !== false;
   settings.vibrate = false;
   settings.timer = [5,8,10,15,20,30].includes(Number(settings.timer)) ? Number(settings.timer) : 15;
-  settings.qCount = [5,10,15,20].includes(Number(settings.qCount)) ? Number(settings.qCount) : 10;
+  settings.qCount = 100;
   const sound = document.getElementById('toggleSound');
   const timer = document.getElementById('timerSelect');
   const qCount = document.getElementById('qCountSelect');
@@ -935,7 +924,6 @@ const ACHIEVEMENTS = [
   { id: 'state_explorer', name: 'State Explorer', desc: 'Play 5 different state quizzes', icon: '🗺️', check: p => (p.statesPlayed || []).length >= 5 },
   { id: 'gk_master', name: 'GK Master', desc: 'Answer 100 GK questions correctly', icon: '🌍', check: p => (p.gkCorrect || 0) >= 100 },
   { id: 'speed_demon', name: 'Speed Demon', desc: 'Complete a Speed Round', icon: '⏱️', check: p => p.achievements.includes('speed_flag') },
-  { id: 'daily', name: 'Daily Grinder', desc: 'Complete a Daily Challenge', icon: '📅', check: p => p.achievements.includes('daily_flag') }
 ];
 function checkAchievements() {
   let newOnes = [];
@@ -963,38 +951,55 @@ function renderAchievements() {
   }).join('');
 }
 
-/* ---------- Leaderboard ---------- */
+/* ---------- Leaderboard: one aggregate row per person ---------- */
 function getLeaderboard() {
-  try { return JSON.parse(localStorage.getItem('nq_leaderboard') || '[]'); } catch { return []; }
+  try {
+    const raw = JSON.parse(localStorage.getItem('nq_leaderboard') || '[]');
+    const map = new Map();
+    (Array.isArray(raw) ? raw : []).forEach(e => {
+      const name = String(e.name || 'Learner').trim();
+      const key = name.toLowerCase();
+      let row = map.get(key);
+      if (!row) { row = {name, totalQuestions:0, totalCorrect:0, pct:0, quizzes:0, lastTag:e.lastTag||e.tag||'', date:e.date||new Date().toISOString()}; map.set(key,row); }
+      row.totalQuestions += Number(e.totalQuestions ?? e.total ?? 0) || 0;
+      row.totalCorrect += Number(e.totalCorrect ?? e.score ?? 0) || 0;
+      row.quizzes += Number(e.quizzes ?? 1) || 1;
+      row.lastTag = e.lastTag || e.tag || row.lastTag;
+      row.date = e.date || row.date;
+    });
+    const out=[...map.values()];
+    out.forEach(e => e.pct=e.totalQuestions?Math.round(e.totalCorrect/e.totalQuestions*100):0);
+    return out;
+  } catch { return []; }
 }
 function addToLeaderboard(score, total, tag) {
+  const name = (profile.name || 'Learner').trim();
   const lb = getLeaderboard();
-  lb.push({ name: profile.name, score, total, tag, date: new Date().toISOString(), pct: Math.round((score / total) * 100) });
-  lb.sort((a, b) => b.pct - a.pct || b.score - a.score);
-  localStorage.setItem('nq_leaderboard', JSON.stringify(lb.slice(0, 20)));
+  let entry = lb.find(e => String(e.name).toLowerCase() === name.toLowerCase());
+  if (!entry) {
+    entry = { name, totalQuestions: 0, totalCorrect: 0, pct: 0, quizzes: 0, lastTag: tag, date: new Date().toISOString() };
+    lb.push(entry);
+  }
+  entry.totalQuestions += Number(total) || 0;
+  entry.totalCorrect += Number(score) || 0;
+  entry.quizzes += 1;
+  entry.pct = entry.totalQuestions ? Math.round((entry.totalCorrect / entry.totalQuestions) * 100) : 0;
+  entry.lastTag = tag;
+  entry.date = new Date().toISOString();
+  lb.sort((a,b) => b.pct - a.pct || b.totalCorrect - a.totalCorrect || b.totalQuestions - a.totalQuestions);
+  localStorage.setItem('nq_leaderboard', JSON.stringify(lb.slice(0,100)));
 }
 function renderLeaderboard() {
   const lb = getLeaderboard();
   const list = document.getElementById('leaderboardList');
-  if (!lb.length) {
-    list.innerHTML = '<div class="sub">No scores yet. Play some quizzes!</div>';
-    return;
-  }
-  list.innerHTML = lb.map((e, i) => {
-    const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
-    return `<div class="lb-row">
-      <div class="lb-rank ${rankClass}">${i + 1}</div>
-      <div class="lb-name">${e.name}</div>
-      <div class="lb-score">${e.score}/${e.total} (${e.pct}%)</div>
-    </div>`;
+  if (!lb.length) { list.innerHTML = '<div class="sub">No scores yet. Play some quizzes!</div>'; return; }
+  list.innerHTML = lb.map((e,i) => {
+    const rankClass = i===0?'gold':i===1?'silver':i===2?'bronze':'';
+    return `<div class="lb-row"><div class="lb-rank ${rankClass}">${i+1}</div><div class="lb-name">${escapeHtml(e.name)}</div><div class="lb-score">${e.totalQuestions} Q • ${e.totalCorrect} Right • ${e.pct}%</div></div>`;
   }).join('');
 }
 function clearLeaderboard() {
-  if (confirm('Clear all leaderboard scores?')) {
-    localStorage.removeItem('nq_leaderboard');
-    renderLeaderboard();
-    showToast('Leaderboard cleared');
-  }
+  if (confirm('Clear all leaderboard scores?')) { localStorage.removeItem('nq_leaderboard'); renderLeaderboard(); showToast('Leaderboard cleared'); }
 }
 
 /* ---------- Toast ---------- */
@@ -2045,7 +2050,7 @@ function initProfileForm() {
 function populateProfileBoards(){const st=document.getElementById('profState')?.value, b=document.getElementById('profBoard'); if(!b)return; const arr=STATE_BOARDS[st]||['CBSE','CISCE','NIOS']; b.innerHTML=arr.map(x=>`<option value="${escapeHtml(x)}">${escapeHtml(x)}</option>`).join(''); if(profile.board && arr.includes(profile.board)) b.value=profile.board;}
 function populateProfileStream(){const cls=document.getElementById('profClass')?.value||'', w=document.getElementById('profStreamWrap'); if(w) w.style.display=(cls==='Class 11'||cls==='Class 12')?'block':'none';}
 function saveProfile() {
-  profile.name=document.getElementById('profName').value.trim()||'Learner'; profile.cls=document.getElementById('profClass').value||'Class 10'; profile.state=document.getElementById('profState').value||'West Bengal'; profile.board=document.getElementById('profBoard').value||'CBSE'; profile.stream=document.getElementById('profStream').value||''; saveProfileData(); renderProfileBadge(); checkDailyBanner(); goTo('homeScreen');
+  profile.name=document.getElementById('profName').value.trim()||'Learner'; profile.cls=document.getElementById('profClass').value||'Class 10'; profile.state=document.getElementById('profState').value||'West Bengal'; profile.board=document.getElementById('profBoard').value||'CBSE'; profile.stream=document.getElementById('profStream').value||''; saveProfileData(); renderProfileBadge(); goTo('homeScreen');
 }
 function editProfile() {
   document.getElementById('profName').value=profile.name==='Learner'?'':profile.name||'';
@@ -2079,7 +2084,7 @@ function goTo(id) {
   }
   if (id === 'achievementsScreen') renderAchievements();
   if (id === 'leaderboardScreen') renderLeaderboard();
-  if (id === 'homeScreen') { renderProfileBadge(); renderScoreboard(); checkDailyBanner(); }
+  if (id === 'homeScreen') { renderProfileBadge(); renderScoreboard(); }
   playClick();
   return true;
 }
@@ -2196,7 +2201,7 @@ async function appendUnlimitedQuestions(){
   if(unlimitedQuizGenerating || !quizState || quizState.finished) return false;
   unlimitedQuizGenerating=true;
   try{
-    const arr=await generateUnlimitedQuizBatch(quizState.tag,quizState.mode,12);
+    const arr=await generateUnlimitedQuizBatch(quizState.tag,quizState.mode,100);
     if(!arr.length) return false;
     const normalized=quizState.mode==='tf'
       ? arr.map(x=>({q:String(x.q),answer:Boolean(x.answer)}))
@@ -2219,51 +2224,36 @@ async function continueUnlimitedQuiz(){
   }else renderQuestion();
 }
 
-function startQuiz(questions, tag, mode = 'mcq', timerOverride = null) {
+async function startQuiz(questions, tag, mode = 'mcq', timerOverride = null) {
   if (!questions || !questions.length) { showToast('No questions available'); return; }
-  let qs = fisherYates(questions);
-  const count = Math.max(1, Math.min(Number(settings.qCount)||10, qs.length));
-  qs = qs.slice(0, count);
+  let qs = fisherYates(questions).slice(0, 100);
   quizState = {
     questions: qs, idx: 0, score: 0, tag, answered: false, finished:false, unlimited:true,
-    timer: null, timerOverride: timerOverride, 
+    timer: null, timerOverride: timerOverride, targetCount: 100,
     streak: 0, maxStreak: 0, mode, startTime: Date.now(), times: [], review: []
   };
   goTo('quizScreen');
   renderQuestion();
+  // Keep the first round at 100 whenever the local AI engine can supply more.
+  while (quizState && quizState.questions.length < 100 && !unlimitedQuizGenerating) {
+    const before = quizState.questions.length;
+    const ok = await appendUnlimitedQuestions();
+    if (!ok || quizState.questions.length === before) break;
+  }
+  if (quizState && quizState.idx === 0 && !quizState.answered) renderQuestion();
 }
 function startTrueFalse() {
   startQuiz(TF_DATA, 'True / False Blitz', 'tf');
 }
 function startSpeedRound() {
   const all = [...GK_DATA, ...Object.values(STATE_DATA).flat()];
-  const qs = fisherYates(all).slice(0, Math.min(10, all.length));
+  const qs = fisherYates(all).slice(0, Math.min(100, all.length));
   startQuiz(qs, 'Speed Round', 'mcq', 8);
   profile.achievements = profile.achievements || [];
   if (!profile.achievements.includes('speed_flag')) {
     profile.achievements.push('speed_flag');
     saveProfileData();
   }
-}
-function startDailyChallenge() {
-  const today = new Date().toDateString();
-  const seed = today.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
-  const all = fisherYates([...GK_DATA]);
-  const qs = [];
-  for (let i = 0; i < 10; i++) qs.push(all[(seed + i * 7) % all.length]);
-  startQuiz(qs, 'Daily Challenge', 'mcq');
-  profile.achievements = profile.achievements || [];
-  if (!profile.achievements.includes('daily_flag')) {
-    profile.achievements.push('daily_flag');
-    saveProfileData();
-  }
-  localStorage.setItem('nq_daily', today);
-  document.getElementById('dailyBanner').style.display = 'none';
-}
-function checkDailyBanner() {
-  const today = new Date().toDateString();
-  const last = localStorage.getItem('nq_daily');
-  document.getElementById('dailyBanner').style.display = last === today ? 'none' : 'block';
 }
 function retryQuiz() {
   if (quizState.questions && quizState.questions.length) {
@@ -2275,8 +2265,16 @@ function renderQuestion() {
   const nextBtn = document.getElementById('nextQuestionBtn');
   if (nextBtn) { nextBtn.disabled = true; nextBtn.textContent = 'Next Question →'; }
   quizState.hintUsed = false;
-  const total = quizState.questions.length;
-  const cur = quizState.questions[quizState.idx];
+  let total = quizState.questions.length;
+  let cur = quizState.questions[quizState.idx];
+  // Never render a blank MCQ. Skip malformed records and use the next valid one.
+  if (quizState.mode !== 'tf') {
+    while (cur && (!cur.q || !Array.isArray(cur.options) || cur.options.map(String).filter(x => x.trim()).length < 4 || cur.answer == null)) {
+      quizState.idx++;
+      cur = quizState.questions[quizState.idx];
+    }
+  }
+  total = quizState.questions.length;
   if (!cur) { showResult(); return; }
   document.getElementById('scoreNum').textContent = quizState.score;
   document.getElementById('streakNum').textContent = quizState.streak;
@@ -2301,7 +2299,13 @@ function renderQuestion() {
     optBox.appendChild(fBtn);
   } else {
     optBox.className = 'options';
-    const opts = fisherYates(cur.options || []);
+    const opts = fisherYates((Array.isArray(cur.options) ? cur.options : []).map(String).filter(x => x.trim()).filter((x,i,a)=>a.findIndex(y=>y.toLowerCase()===x.toLowerCase())===i)).slice(0,4);
+    if (opts.length < 4) {
+      optBox.innerHTML = '<div class="sub" style="grid-column:1/-1;text-align:center">Question options are loading…</div>';
+      const nextBtn = document.getElementById('nextQuestionBtn'); if(nextBtn) nextBtn.disabled=true;
+      appendUnlimitedQuestions().then(()=>{ if(quizState && !quizState.answered) renderQuestion(); });
+      return;
+    }
     opts.forEach((opt, i) => {
       const btn = document.createElement('button');
       btn.className = `opt`;
@@ -2407,7 +2411,7 @@ function showResult() {
   if (pct === 100 && !profile.achievements.includes('perfect_flag')) {
     profile.achievements.push('perfect_flag');
   }
-  if (quizState.tag.includes('General') || quizState.tag.includes('GK') || quizState.tag.includes('Daily') || quizState.tag.includes('Speed')) {
+  if (quizState.tag.includes('General') || quizState.tag.includes('GK') || quizState.tag.includes('Speed')) {
     profile.gkCorrect = (profile.gkCorrect || 0) + quizState.score;
   }
   saveProfileData();
@@ -2472,7 +2476,6 @@ function bootApp() {
   buildClassGrid();
   buildStateGrid();
   renderProfileBadge();
-  checkDailyBanner();
   goTo('homeScreen');
 }
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bootApp, { once: true });
